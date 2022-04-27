@@ -1,0 +1,248 @@
+/* _________________________ Imports _________________________ */
+
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* _________________________ Website Theme _________________________ */
+
+:root {
+  --hue-1: 257;
+  --hue-2: 47;
+  --main-color-1: hsl(var(--hue-1), 100%, 60%);
+  --main-color-dark-1: hsl(var(--hue-1), 69%, 50%);
+  --main-color-2: hsl(var(--hue-2), 100%, 61%);
+  --main-color-dark-2: hsl(var(--hue-2), 82%, 55%);
+  --section-padding: 7rem;
+}
+
+body {
+  --bg-color: hsl(var(--hue-1), 100%, 97%);
+  --bg-color-1: hsl(var(--hue-1), 100%, 95.5%);
+  --bg-color-2: #fff;
+  --bg-color-3: hsl(var(--hue-1), 100%, 98%);
+  --bg-color-transparent: rgba(255, 255, 255, 0.6);
+  --heading-color: hsl(var(--hue-1), 61%, 24%);
+  --text-color: hsl(var(--hue-1), 17%, 63%);
+}
+
+.container.dark {
+  --bg-color: hsl(var(--hue-1), 19%, 15%);
+  --bg-color-1: hsl(var(--hue-1), 21%, 11%);
+  --bg-color-2: hsl(var(--hue-1), 23%, 19%);
+  --bg-color-3: hsl(var(--hue-1), 23%, 24%);
+  --bg-color-transparent: hsla(var(--hue-1), 23%, 19%, 0.6);
+  --heading-color: hsl(var(--hue-1), 100%, 95%);
+  --text-color: hsl(var(--hue-1), 14%, 51%);
+}
+
+.container.dark .st1 {
+  fill: hsla(var(--hue-1), 18%, 29%)
+}
+
+.container.dark .shape.square {
+  opacity: .07;
+}
+
+.container.dark .toggle-btn {
+  background-color: var(--bg-color-3);
+}
+
+.container.dark .toggle-btn:hover {
+  background-color: brightness(110%);
+}
+
+
+.container.dark .nav-link:hover::after,
+.container.dark .nav-link.active::after {
+  opacity: .6;
+}
+
+.container.dark .form-input:hover {
+  filter: brightness(110%);
+}
+
+/* _________________________ General Styles _________________________ */
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--bg-color);
+  font-family: "Poppins", sans-serif;
+  transition: .3s background-color;
+}
+
+body.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+
+::selection {
+  background-color: hsla(var(--hue-1), 100%, 60%, 0.9);
+  color: #FFF;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/* _________________________ General Styles _________________________ */
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+input,
+select {
+  display: inline-block;
+  padding: .9rem 1.5rem;
+  background: var(--bg-color-3);
+  border: 2px solid var(--bg-color-1);
+  width: 100%;
+  border-radius: 17px;
+  font-family: inherit;
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--heading-color);
+  outline: none;
+  transition: .3s;
+}
+
+/* _________________________ REUSABLE SCSS _________________________ */
+
+.btn {
+  display: inline-block;
+  padding: .9rem 1.75rem;
+  border-radius: 17px;
+  background-color: var(--main-color-1);
+  color: #FFF;
+  font-size: .85rem;
+  letter-spacing: .4px;
+  min-width: 125px;
+  text-align: center;
+  text-transform: capitalize;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: .3s;
+
+  i {
+    width: 60px;
+    height: 60px;
+  }
+
+  &:hover {
+    background-color: var(--main-color-dark-1);
+  }
+
+}
+
+nav {
+  display: flex;
+
+  ul {
+    display: flex;
+    gap: .5rem;
+
+    li {
+      position: relative;
+      display: inline-block;
+      margin: 0 1rem;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      color: var(--text-color);
+      font-weight: 500;
+      opacity: .9;
+      transition: .3s;
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 10px;
+        border-radius: 5px;
+        background-color: var(--main-color-1);
+        bottom: 0;
+        left: -5px;
+        z-index: -1;
+        opacity: 0;
+        transition: .3s;
+      }
+
+      &:hover {
+        color: var(--heading-color);
+
+        &::after {
+          width: 100%;
+          opacity: .2;
+        }
+      }
+    }
+  }
+}
+
+.list-user {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 150px;
+
+  background: var(--bg-color-2);
+  color: var(--text-color);
+  border: 2px solid var(--bg-color-1);
+  border-radius: 50%;
+  transition: .3s;
+}
+
+/* _________________________ Isert New User Styles _________________________ */
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: flex-start;
+  column-gap: 2rem;
+
+  .category {
+    display: flex;
+    flex-direction: column;
+    padding: 0 2rem;
+    row-gap: 1rem;
+  }
+
+  form {
+    // background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 0 2rem;
+    row-gap: 1rem;
+
+    width: 500px;
+
+    div {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+}
