@@ -64,7 +64,7 @@ export default function InsertNewUser() {
   }
 
   return (
-    <main>
+    <main className="two-sections">
       <form onSubmit={registerNewUser}>
         <h3>Inserir novo usuário</h3>
         <input

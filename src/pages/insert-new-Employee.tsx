@@ -1,4 +1,4 @@
-import { getDatabase, onValue, ref, set } from "firebase/database"
+import { child, get, getDatabase, onValue, ref, set } from "firebase/database"
 import { FormEvent, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 
@@ -31,7 +31,7 @@ export default function InsertNewEmployee() {
     const db = getDatabase()
     const dbRef = ref(db, "staff/" + cpf)
 
-    onValue(dbRef, res => {
+    get(dbRef).then(res => {
       if (res.exists()) {
         toast.warning("Existe um funcionário com esse CPF")
       } else {
@@ -50,7 +50,6 @@ export default function InsertNewEmployee() {
         })
       }
     })
-
   }
 
   function registerNewJobCategory(e: FormEvent) {
@@ -69,7 +68,7 @@ export default function InsertNewEmployee() {
   }
 
   return (
-    <main>
+    <main className="two-sections">
 
       <div className="category">
         <h4>Selecione uma categoria</h4>

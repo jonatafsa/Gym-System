@@ -218,7 +218,7 @@ nav {
 
 /* _________________________ Isert New User Styles _________________________ */
 
-main {
+.two-sections {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: flex-start;
@@ -229,6 +229,11 @@ main {
     flex-direction: column;
     padding: 0 2rem;
     row-gap: 1rem;
+  }
+
+  .schedules {
+    display: flex;
+    gap: 1rem;
   }
 
   form {
