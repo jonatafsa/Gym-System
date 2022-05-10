@@ -1,11 +1,14 @@
 import { child, get, getDatabase, onValue, ref, set } from "firebase/database"
 import { FormEvent, useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import { useAuth } from "../hooks/use-auth"
 
 
 export default function InsertNewEmployee() {
-  const [category, setCategory] = useState("")
 
+  const { user } = useAuth()
+
+  const [category, setCategory] = useState("")
   const [newCategory, setNewCategory] = useState("")
   const [categories, setNewCategories] = useState<any[]>(["arroz", "feijão"])
   const [name, setName] = useState("")
@@ -18,10 +21,12 @@ export default function InsertNewEmployee() {
 
   useEffect(() => {
     const db = getDatabase()
-    const dbRef = ref(db, "job-categories")
+    const dbRef = ref(db,  "gym_users/" + user?.uid + "/job-categories")
 
     onValue(dbRef, res => {
-      setNewCategories(Object.values(res.val()))
+      if(res.exists()) {
+        setNewCategories(Object.values(res.val()))
+      }
     })
   }, [])
 
@@ -29,7 +34,7 @@ export default function InsertNewEmployee() {
     e.preventDefault()
 
     const db = getDatabase()
-    const dbRef = ref(db, "staff/" + cpf)
+    const dbRef = ref(db,  "gym_users/" + user?.uid + "/staff/" + cpf)
 
     get(dbRef).then(res => {
       if (res.exists()) {
@@ -56,7 +61,7 @@ export default function InsertNewEmployee() {
     e.preventDefault()
 
     const db = getDatabase()
-    const dbRef = ref(db, "job-categories/" + newCategory)
+    const dbRef = ref(db,  "gym_users/" + user?.uid + "/job-categories/" + newCategory)
 
     set(dbRef, {
       name: newCategory
@@ -64,6 +69,8 @@ export default function InsertNewEmployee() {
       setCategory("")
       setNewCategory("")
       toast.success("Categoria inserida com sucesso!!")
+    }).catch(err => {
+      console.log(err)
     })
   }
 
@@ -71,7 +78,7 @@ export default function InsertNewEmployee() {
     <main className="two-sections">
 
       <div className="category">
-        <h4>Selecione uma categoria</h4>
+        <h4 className="sub-heading">Selecione uma categoria</h4>
         <select onChange={e => setCategory(e.target.value)}>
           <option value="">Selecione uma categoria</option>
           {categories.map(category => (
@@ -90,94 +97,98 @@ export default function InsertNewEmployee() {
 
       {category === "insert-new" ? (
         <form onSubmit={registerNewJobCategory}>
-          <h3>Cadastrar nova categoria</h3>
-
-          <input
-            type="text"
-            placeholder="Categoria"
-            value={newCategory}
-            onChange={e => setNewCategory(e.target.value)}
-            required
-          />
-
-          <button
-            type="submit"
-            className="btn"
-          >
-            Cadastrar nova categoria
-          </button>
-        </form>
-      ) : (
-        category === "" ? "" : (
-          <form onSubmit={registerNewEmployee}>
-            <h3>Inserir novo usuário</h3>
+          <div className="form-container">
+            <h3 className="heading">Cadastrar nova categoria</h3>
 
             <input
               type="text"
-              placeholder="Nome"
-              value={name}
-              onChange={e => setName(e.target.value)}
+              placeholder="Categoria"
+              value={newCategory}
+              onChange={e => setNewCategory(e.target.value)}
               required
             />
-
-            <div>
-              <input
-                type="text"
-                placeholder="Endereço"
-                value={address}
-                onChange={e => setAddress(e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Cidade"
-                value={city}
-                onChange={e => setCity(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <input
-                type="text"
-                placeholder="CPF"
-                value={cpf}
-                onChange={e => setCpf(e.target.value)}
-                required
-              />
-
-              <input
-                type="text"
-                placeholder="Telefone"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <input
-                type="text"
-                placeholder="Data de nascimento"
-                value={birthdate}
-                onChange={e => setBirthdate(e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Remuneração Base"
-                value={remuneration}
-                onChange={e => setRemuneration(e.target.value)}
-                required
-              />
-            </div>
 
             <button
               type="submit"
               className="btn"
             >
-              Cadastrar novo usuário
+              Cadastrar nova categoria
             </button>
+          </div>
+        </form>
+      ) : (
+        category === "" ? "" : (
+          <form onSubmit={registerNewEmployee}>
+            <div className="form-container">
+            <h3 className="heading">Inserir novo usuário</h3>
+
+<input
+  type="text"
+  placeholder="Nome"
+  value={name}
+  onChange={e => setName(e.target.value)}
+  required
+/>
+
+<div>
+  <input
+    type="text"
+    placeholder="Endereço"
+    value={address}
+    onChange={e => setAddress(e.target.value)}
+    required
+  />
+  <input
+    type="text"
+    placeholder="Cidade"
+    value={city}
+    onChange={e => setCity(e.target.value)}
+    required
+  />
+</div>
+
+<div>
+  <input
+    type="text"
+    placeholder="CPF"
+    value={cpf}
+    onChange={e => setCpf(e.target.value)}
+    required
+  />
+
+  <input
+    type="text"
+    placeholder="Telefone"
+    value={phone}
+    onChange={e => setPhone(e.target.value)}
+    required
+  />
+</div>
+
+<div>
+  <input
+    type="text"
+    placeholder="Data de nascimento"
+    value={birthdate}
+    onChange={e => setBirthdate(e.target.value)}
+    required
+  />
+  <input
+    type="text"
+    placeholder="Remuneração Base"
+    value={remuneration}
+    onChange={e => setRemuneration(e.target.value)}
+    required
+  />
+</div>
+
+<button
+  type="submit"
+  className="btn"
+>
+  Cadastrar novo usuário
+</button>
+            </div>
           </form>
         )
       )}

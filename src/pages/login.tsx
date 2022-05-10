@@ -1,36 +1,53 @@
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { app } from "../services/firebase";
+import Cookies from "js-cookie";
+import { FormEvent, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/use-auth";
 
 export default function Login() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-  function sigin() {
-    const provider = new GoogleAuthProvider();
+  const { signIn, user } = useAuth()
 
-    const auth = getAuth(app);
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        console.log(user, token)
-        // ...
-      }).catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
+  function signinUser(e: FormEvent) {
+    e.preventDefault()
+
+    signIn(email, password)
+    return (
+      <Navigate to="/" replace />
+    )
+  }
+
+  if (user?.refreshToken && Cookies.get("token")) {
+    return (
+      <Navigate to="/" replace />
+    )
   }
 
   return (
     <main>
-      <button onClick={sigin}>Entrar</button>
+      <form onSubmit={signinUser}>
+        <div className="form-container" style={{ width: "500px" }}>
+          <h3 className="sub-heading">Entre com seu email e senha</h3>
+          <input
+            type="text"
+            placeholder="E-mail"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Senha"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
+
+          <input type="submit" value="Entrar" className="btn"></input>
+        </div>
+      </form>
     </main>
   )
 }
