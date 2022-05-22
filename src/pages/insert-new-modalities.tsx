@@ -2,6 +2,7 @@ import { getDatabase, onValue, ref, set, update } from "firebase/database"
 import { FormEvent, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { useAuth } from "../hooks/use-auth"
+import { PriceMask } from "../services/masks"
 
 
 export default function InsertNewModalitie() {
@@ -98,7 +99,7 @@ export default function InsertNewModalitie() {
 
     set(dbRef, {
       name,
-      price,
+      price: price.replace('.', '').replace(',', '').replace(/\D/g, ''),
       responsible: responsibleDoc,
       schedules: {
         "seg": seg,
@@ -132,7 +133,7 @@ export default function InsertNewModalitie() {
           <input
             type="text"
             placeholder="R$ Valor da mensalidade"
-            value={price}
+            value={PriceMask(price)}
             onChange={e => setPrice(e.target.value)}
             required
           />

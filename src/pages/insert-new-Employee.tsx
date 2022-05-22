@@ -2,6 +2,7 @@ import { child, get, getDatabase, onValue, ref, set } from "firebase/database"
 import { FormEvent, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { useAuth } from "../hooks/use-auth"
+import { CPFMask, PhoneMask, PriceMask } from "../services/masks"
 
 
 export default function InsertNewEmployee() {
@@ -21,10 +22,10 @@ export default function InsertNewEmployee() {
 
   useEffect(() => {
     const db = getDatabase()
-    const dbRef = ref(db,  "gym_users/" + user?.uid + "/job-categories")
+    const dbRef = ref(db, "gym_users/" + user?.uid + "/job-categories")
 
     onValue(dbRef, res => {
-      if(res.exists()) {
+      if (res.exists()) {
         setNewCategories(Object.values(res.val()))
       }
     })
@@ -32,9 +33,10 @@ export default function InsertNewEmployee() {
 
   function registerNewEmployee(e: FormEvent) {
     e.preventDefault()
+    const clearCPF = cpf.replace('.', '').replace(',', '').replace(/\D/g, '')
 
     const db = getDatabase()
-    const dbRef = ref(db,  "gym_users/" + user?.uid + "/staff/" + cpf)
+    const dbRef = ref(db, "gym_users/" + user?.uid + "/staff/" + clearCPF)
 
     get(dbRef).then(res => {
       if (res.exists()) {
@@ -46,9 +48,9 @@ export default function InsertNewEmployee() {
           phone,
           address,
           city,
-          cpf,
+          cpf: clearCPF,
           birthdate,
-          remuneration,
+          remuneration: remuneration.replace('.', '').replace(',', '').replace(/\D/g, ''),
           function: category
         }).then(() => {
           toast.success("Novo funcionário inserido com sucesso!!")
@@ -61,7 +63,7 @@ export default function InsertNewEmployee() {
     e.preventDefault()
 
     const db = getDatabase()
-    const dbRef = ref(db,  "gym_users/" + user?.uid + "/job-categories/" + newCategory)
+    const dbRef = ref(db, "gym_users/" + user?.uid + "/job-categories/" + newCategory)
 
     set(dbRef, {
       name: newCategory
@@ -120,74 +122,74 @@ export default function InsertNewEmployee() {
         category === "" ? "" : (
           <form onSubmit={registerNewEmployee}>
             <div className="form-container">
-            <h3 className="heading">Inserir novo usuário</h3>
+              <h3 className="heading">Inserir novo usuário</h3>
 
-<input
-  type="text"
-  placeholder="Nome"
-  value={name}
-  onChange={e => setName(e.target.value)}
-  required
-/>
+              <input
+                type="text"
+                placeholder="Nome"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                required
+              />
 
-<div>
-  <input
-    type="text"
-    placeholder="Endereço"
-    value={address}
-    onChange={e => setAddress(e.target.value)}
-    required
-  />
-  <input
-    type="text"
-    placeholder="Cidade"
-    value={city}
-    onChange={e => setCity(e.target.value)}
-    required
-  />
-</div>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Endereço"
+                  value={address}
+                  onChange={e => setAddress(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Cidade"
+                  value={city}
+                  onChange={e => setCity(e.target.value)}
+                  required
+                />
+              </div>
 
-<div>
-  <input
-    type="text"
-    placeholder="CPF"
-    value={cpf}
-    onChange={e => setCpf(e.target.value)}
-    required
-  />
+              <div>
+                <input
+                  type="text"
+                  placeholder="CPF"
+                  value={CPFMask(cpf)}
+                  onChange={e => setCpf(e.target.value)}
+                  required
+                />
 
-  <input
-    type="text"
-    placeholder="Telefone"
-    value={phone}
-    onChange={e => setPhone(e.target.value)}
-    required
-  />
-</div>
+                <input
+                  type="text"
+                  placeholder="Telefone"
+                  value={PhoneMask(phone)}
+                  onChange={e => setPhone(e.target.value)}
+                  required
+                />
+              </div>
 
-<div>
-  <input
-    type="text"
-    placeholder="Data de nascimento"
-    value={birthdate}
-    onChange={e => setBirthdate(e.target.value)}
-    required
-  />
-  <input
-    type="text"
-    placeholder="Remuneração Base"
-    value={remuneration}
-    onChange={e => setRemuneration(e.target.value)}
-    required
-  />
-</div>
+              <div>
+                <input
+                  type="date"
+                  placeholder="Data de nascimento"
+                  value={birthdate}
+                  onChange={e => setBirthdate(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Remuneração Base"
+                  value={PriceMask(remuneration)}
+                  onChange={e => setRemuneration(e.target.value)}
+                  required
+                />
+              </div>
 
-<button
-  type="submit"
-  className="btn"
->
-  Cadastrar novo usuário
-</button>
+              <button
+                type="submit"
+                className="btn"
+              >
+                Cadastrar novo usuário
+              </button>
             </div>
           </form>
         )

@@ -45,7 +45,7 @@ export default function InsertNewUser() {
     const database = getDatabase()
     const userRef = DatabaseRef(database, "gym_users/" + user?.uid + "/users/" + clearCPF)
     const dbRef = DatabaseRef(database)
-    let date = new Date().toLocaleDateString('pt-br')
+    let date = new Date()
 
     var data = {
       registeredIn: date,
@@ -56,7 +56,8 @@ export default function InsertNewUser() {
       city,
       cpf: clearCPF,
       birthdate,
-      userModalities
+      userModalities,
+      paymentShedules: "init"
     }
 
     await DatabaseGet(child(dbRef, "gym_users/" + user?.uid + "/users")).then(res => {

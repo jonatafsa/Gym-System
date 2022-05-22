@@ -108,10 +108,38 @@ ul {
   width: 100vw;
   height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  // align-items: center;
   background-color: var(--bg-color);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+
+  header {
+    width: 100%;
+    height: 3.45rem;
+    background-color: var(--bg-color);
+    border-bottom: 2px solid var(--bg-color-1);
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+
+    .btn-toogle {
+      color: var(--main-color-1);
+      cursor: pointer;
+      transition: .3s;
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
+  }
 }
 
 input,
@@ -132,6 +160,13 @@ select {
 
 input::-webkit-datetime-edit {
   color: var(--text-color);
+}
+
+main {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 1rem;
 }
 
 /* _________________________ REUSABLE SCSS _________________________ */
@@ -185,6 +220,7 @@ input::-webkit-datetime-edit {
   padding: .15rem 0;
   min-width: revert;
 }
+
 .danger:hover .secondary-btn {
   color: rgb(255, 255, 255);
 }
@@ -217,14 +253,37 @@ input::-webkit-datetime-edit {
 
 nav {
   display: flex;
+  flex-direction: column;
+  width: 18rem;
+  height: 100%;
+  background-color: var(--bg-color-2);
+  border-right: 2px solid var(--bg-color-1);
+  transition: .5s;
+  overflow: hidden;
+  box-shadow: 4px 6px 20px rgba(#000000, 0.3);
+
+  h3 {
+    width: 100%;
+    height: 3.45rem;
+    padding: .5rem;
+    background-color: var(--bg-color);
+    border-bottom: 2px solid var(--bg-color-1);
+    border-right: 1px solid var(--bg-color-1);
+  }
 
   ul {
     display: flex;
+    flex-direction: column;
     gap: .5rem;
+    padding-top: 2.75rem;
+    opacity: 1;
+    transition: .3s;
 
     li {
       position: relative;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+
       margin: 0 1rem;
       text-transform: uppercase;
       font-size: 0.75rem;
@@ -232,7 +291,7 @@ nav {
       color: var(--text-color);
       font-weight: 500;
       opacity: .9;
-      transition: .3s;
+      transition: .2s;
 
       &::after {
         content: "";
@@ -257,7 +316,20 @@ nav {
         }
       }
     }
+
+    a {
+      display: block;
+      padding: 10px 12px;
+    }
   }
+}
+
+.hide {
+  width: 0;
+}
+
+.hide ul {
+  opacity: 0;
 }
 
 .list-user {
@@ -392,6 +464,13 @@ form {
       gap: 1rem;
     }
 
+    h3 {
+      display: grid;
+      grid-template-columns: 1fr 50px;
+      align-items: center;
+      gap: .5rem;
+    }
+
 
   }
 }
@@ -489,7 +568,7 @@ form {
 .box {
   background-color: var(--bg-color-2);
   padding: 1.85rem 2.25rem;
-  border-radius: 20px;
+  border-radius: 8px;
   width: 100%;
   position: relative;
   transition: .3s background-color;
@@ -549,37 +628,23 @@ form {
 .card {
   background-color: var(--bg-color);
   width: 100%;
-  max-width: 100%;
-  max-height: 100%;
   display: flex;
-  flex-direction: column;
-  box-shadow: 0 15px 35px rgba(#000000, 0.5);
-  border-radius: 12px;
-  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  
 }
 
 .table-concept {
-  width: 100%;
-  height: 100%;
-  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   overflow: auto;
   box-sizing: border-box;
-
-  // .table-display+table+.pagination {
-  //   display: flex;
-
-  //   &>label.active {
-  //     color: var(--bg-color);
-  //     background-color: $pagination-label-active-background-color;
-  //     cursor: default;
-  //   }
-
-  //   &>label.disabled {
-  //     color: var(--bg-color);
-  //     background-color: $pagination-label-disabled-background-color;
-  //     cursor: default;
-  //   }
-  // }
+  font-size: .9rem;
+  box-shadow: 0 15px 35px rgba(#000000, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
 
   .table-display {
     text-align: right;
@@ -591,10 +656,11 @@ form {
 
   table {
     background-color: var(--bg-color);
-    font-size: 14px;
+    font-size: .85rem;
     border-collapse: collapse;
     width: 100%;
     display: block;
+
 
     tr {
       &:last-child {
@@ -606,7 +672,7 @@ form {
       th,
       td {
         text-align: left;
-        padding: 15px;
+        padding: .875rem;
         box-sizing: border-box;
       }
 
@@ -630,6 +696,7 @@ form {
         margin: .3rem 0;
         line-height: 2.3;
         transition: .3s color;
+        font-size: .8rem;
       }
     }
 
@@ -946,4 +1013,110 @@ main.open-delete .slider-wrap-delete {
   display: flex;
   flex-direction: column;
   gap: 3rem;
+}
+
+
+/* _________________________ Home Page Styles _________________________ */
+
+
+.top-painel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+
+  .painel-header {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    justify-content: space-between;
+    width: 100%;
+
+    h1 {
+      font-size: 1.35rem;
+    }
+  }
+
+  .painel-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1rem;
+    width: 100%;
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      height: 350px;
+  
+      .box {
+        display: flex;
+        max-width: 46%;
+        height: 46%;
+        position: relative;
+  
+        h2 {
+          font-size: 1.9rem;
+        }
+  
+        .box-footer {
+          width: 100%;
+          display: grid;
+          grid-template-columns: 18px 1fr;
+          column-gap: .4rem;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-color);
+          font-size: .8rem;
+        }
+  
+        .box-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          width: 45px;
+          height: 45px;
+          background-color: var(--bg-color-1);
+          color: var(--main-color-1);
+          padding: .5rem;
+          border-radius: 8px;
+        }
+      }
+    }
+
+    .graph {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 345px;
+      padding: 1rem;
+      overflow: hidden;
+
+      h2 {
+        font-size: 1.45rem;
+      }
+    }
+  }
+}
+
+.positive strong {
+  color: rgb(10, 218, 97);;
+}
+
+.positive svg {
+  fill:rgb(10, 218, 97);
+}
+
+.negative svg {
+  fill:rgb(201, 57, 57);
+  transform: rotate(180deg)
 }

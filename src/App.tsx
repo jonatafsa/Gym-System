@@ -10,6 +10,7 @@ function App() {
     <AuthContextProvider>
       <div className="container dark">
         <MyRoutes />
+
         <ToastContainer
           position="bottom-right"
           autoClose={5000}

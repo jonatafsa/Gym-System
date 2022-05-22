@@ -267,7 +267,7 @@ export default function UserManager() {
   }
 
   return (
-    <main className="">
+    <main>
       {/* __________________________ Tabela com os Clientes __________________________ */}
       <h4 className="sub-heading">mostrando 10 de {users.length} usuários</h4>
       <div className="card">
@@ -298,7 +298,7 @@ export default function UserManager() {
                       {
                         user.userModalities ? (
                           monthlyFee(user.userModalities)
-                        ) : <p className="sub-heading danger small">Não cadastrado em nenuma modalidade</p>
+                        ) : <p className="sub-heading danger small">Não matriculado</p>
                       }
                     </td>
                     <td>{
@@ -497,96 +497,6 @@ export default function UserManager() {
                         </>
                       )
                     }
-
-                    {/* <div className="payment-record">
-                      {DBuser.paymentShedules ? (
-                        <h5 className="text">registro de pagamentos</h5>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.jan ? (
-                        <div className="month">
-                          <span className="text">Janeiro</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.jan).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.fev ? (
-                        <div className="month">
-                          <span className="text">Fevereiro</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.fev).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.mar ? (
-                        <div className="month">
-                          <span className="text">Março</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.mar).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.abr ? (
-                        <div className="month">
-                          <span className="text">Abril</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.abr).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.mai ? (
-                        <div className="month">
-                          <span className="text">Maio</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.mai).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.jun ? (
-                        <div className="month">
-                          <span className="text">Junho</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.jun).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.jul ? (
-                        <div className="month">
-                          <span className="text">Julho</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.jul).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.ago ? (
-                        <div className="month">
-                          <span className="text">Agosto</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.ago).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.set ? (
-                        <div className="month">
-                          <span className="text">Setembro</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.set).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.out ? (
-                        <div className="month">
-                          <span className="text">Outubro</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.out).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.nov ? (
-                        <div className="month">
-                          <span className="text">Novembro</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.nov).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-
-                      {DBuser.paymentShedules?.dez ? (
-                        <div className="month">
-                          <span className="text">Dezembro</span>
-                          <p className="text">{`${new Date(DBuser.paymentShedules?.dez).toLocaleDateString('pt-br')}`}</p>
-                        </div>
-                      ) : ""}
-                    </div> */}
 
                     {DBuser.payment < dueDate ? (
                       <div className="payment-record">
