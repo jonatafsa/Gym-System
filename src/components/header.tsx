@@ -1,4 +1,4 @@
-import { UilBars } from '@iconscout/react-unicons'
+import { FaBars } from 'react-icons/fa'
 
 export default function Header() {
     function toogleNavigation() {
@@ -7,6 +7,6 @@ export default function Header() {
     }
 
     return <header>
-        <UilBars onClick={toogleNavigation} className="btn-toogle" />
+        <FaBars size={22} onClick={toogleNavigation} className="btn-toogle" />
     </header>
 }

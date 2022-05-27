@@ -3,14 +3,16 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 
 import {
-  UilEstate,
-  UilPlusCircle,
-  UilUserPlus,
-  UilEditAlt,
-  UilUserSquare,
-  UilUserCheck,
-  UilExternalLinkAlt,
-} from '@iconscout/react-unicons'
+  BiHomeAlt,
+  BiUserPin
+} from 'react-icons/bi'
+import { FaUserShield } from 'react-icons/fa'
+import { CgInsertAfterR } from 'react-icons/cg'
+import { 
+  AiOutlineUserAdd,
+  AiOutlinePlusCircle,
+  AiOutlineEdit
+ } from 'react-icons/ai'
 
 export default function Navigation() {
   const { logout } = useAuth()
@@ -21,37 +23,37 @@ export default function Navigation() {
 
       <ul>
         <li>
-          <UilEstate />
+          <BiHomeAlt size={22} />
           <Link to="/">Home</Link>
         </li>
 
         <li>
-          <UilUserPlus />
+          <AiOutlineUserAdd size={22} />
           <Link to="/insert-new-user">Cadastrar Aluno</Link>
         </li>
 
         <li>
-          <UilPlusCircle />
+          <AiOutlinePlusCircle size={22} />
           <Link to="/insert-new-modalitie">Inserir nova modalidade</Link>
         </li>
 
         <li>
-          <UilEditAlt  />
+          <AiOutlineEdit  size={22} />
           <Link to="/edit-modalities">Editar modalidades</Link>
         </li>
 
         <li>
-          <UilUserSquare  />
+          <FaUserShield size={22}  />
           <Link to="/insert-new-employee">Cadastrar Funcionário</Link>
         </li>
 
         <li>
-          <UilUserCheck  />
+          <BiUserPin size={22}  />
           <Link to="/user-manager">Gerenciar usuários</Link>
         </li>
         
         <li>
-          <UilExternalLinkAlt />
+          <CgInsertAfterR size={22} />
           <Link to="/external-values">Inserir valores externos</Link>
         </li>
 

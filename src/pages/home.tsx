@@ -13,14 +13,13 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import faker from '@faker-js/faker';
 
 import {
-  UilUsersAlt,
-  UilDollarAlt,
-  UilDownloadAlt,
-  UilTopArrowFromTop
-} from '@iconscout/react-unicons'
+  FiUsers,
+  FiDollarSign,
+  FiArrowDown,
+  FiArrowUp
+} from 'react-icons/fi'
 import { PriceMask } from "../services/masks";
 import Navigation from "../components/navigation";
 import Header from "../components/header";
@@ -346,7 +345,7 @@ export default function Home() {
           <div className="painel-content">
             <div className="cards">
               <div className="box">
-                <div className="box-icon"><UilUsersAlt /></div>
+                <div className="box-icon"><FiUsers /></div>
                 <span className="text">Clientes</span>
                 <h2 className="text">{users.length}</h2>
                 <div className="box-footer positive">
@@ -362,7 +361,7 @@ export default function Home() {
               </div>
 
               <div className="box">
-                <div className="box-icon"><UilDollarAlt /></div>
+                <div className="box-icon"><FiDollarSign /></div>
                 <span className="text">Receita mensal</span>
                 <h2 className="text">
                   {PriceMask(monthlyRevenue)}
@@ -393,7 +392,7 @@ export default function Home() {
               </div>
 
               <div className="box">
-                <div className="box-icon"><UilDownloadAlt /></div>
+                <div className="box-icon"><FiArrowDown /></div>
                 <span className="text">Entrada externa</span>
                 <h2 className="text">{PriceMask(positiveExtra)}</h2>
                 {Math.sign(+positivePercent) === 1 ? (
@@ -422,7 +421,7 @@ export default function Home() {
               </div>
 
               <div className="box">
-                <div className="box-icon"><UilTopArrowFromTop /></div>
+                <div className="box-icon"><FiArrowUp /></div>
                 <span className="text">Saida externa</span>
                 <h2 className="text">{PriceMask(negativeExtra)}</h2>
                 {Math.sign(+negativePercent) === 1 ? (

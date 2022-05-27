@@ -1,7 +1,9 @@
 import { get, getDatabase, off, onValue, ref, remove, set, update } from "firebase/database"
 import { useEffect, useState } from "react"
 
-import { UilExclamationTriangle, UilExclamationOctagon, UilCheck } from '@iconscout/react-unicons'
+import { FiChevronDown } from 'react-icons/fi'
+import { BiError } from 'react-icons/bi'
+import { RiErrorWarningLine } from 'react-icons/ri'
 import { toast } from "react-toastify"
 import { useAuth } from "../hooks/use-auth"
 import { CPFMask, PhoneMask, PriceMask } from "../services/masks"
@@ -312,7 +314,7 @@ export default function UserManager() {
                           !user.payment ?
                             <p className="status">
                               Aguardando pagamento
-                              <UilExclamationOctagon color="rgb(255, 238, 81)" />
+                              <RiErrorWarningLine color="rgb(255, 238, 81)" />
                             </p>
                             :
                             (
@@ -320,7 +322,7 @@ export default function UserManager() {
                                 (
                                   <p className="status">
                                     Pagamento Atrasado
-                                    <UilExclamationOctagon color="rgb(218, 58, 10)" />
+                                    <BiError color="rgb(218, 58, 10)" />
                                   </p>
                                 ) : (
                                   new Date(user.payment).getMonth() === new Date(dueDate).getMonth()
@@ -328,12 +330,12 @@ export default function UserManager() {
                                     && new Date().getDate() < new Date(dueDate).getDate() ? (
                                     <p className="status">
                                       Próximo do vencimento
-                                      <UilExclamationTriangle color="rgb(255, 238, 81)" />
+                                      <RiErrorWarningLine color="rgb(255, 238, 81)" />
                                     </p>
                                   ) : (
                                     <p className="status">
                                       Pagamento em dias
-                                      <UilCheck color="rgb(10, 218, 97)" />
+                                      <FiChevronDown color="rgb(10, 218, 97)" />
                                     </p>
                                   )
 
