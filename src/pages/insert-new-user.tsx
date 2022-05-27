@@ -12,6 +12,8 @@ import {
 import { toast } from "react-toastify"
 import { useAuth } from "../hooks/use-auth"
 import { CPFMask, PhoneMask } from "../services/masks"
+import Navigation from "../components/navigation"
+import Header from "../components/header"
 
 export default function InsertNewUser() {
 
@@ -96,96 +98,101 @@ export default function InsertNewUser() {
   }
 
   return (
-    <main>
-      <form onSubmit={registerNewUser} className="two-sections">
-        {/* Formulário com dados do usuário */}
-        <div className="form-container" style={{ maxWidth: "600px" }}>
-          <h3 className="heading">Inserir novo usuário</h3>
-          <input
-            type="text"
-            placeholder="Nome"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            required
-          />
+    <div className="container" >
+      <Navigation />
+      <main>
+        <Header />
 
-          <input
-            type="text"
-            placeholder="Telefone"
-            value={PhoneMask(phone)}
-            onChange={e => setPhone(e.target.value)}
-            required
-          />
-
-          <div>
+        <form onSubmit={registerNewUser} className="two-sections">
+          {/* Formulário com dados do usuário */}
+          <div className="form-container" style={{ maxWidth: "600px" }}>
+            <h3 className="heading">Inserir novo usuário</h3>
             <input
               type="text"
-              placeholder="Endereço"
-              value={address}
-              onChange={e => setAddress(e.target.value)}
+              placeholder="Nome"
+              value={name}
+              onChange={e => setName(e.target.value)}
               required
             />
 
             <input
               type="text"
-              placeholder="Cidade"
-              value={city}
-              onChange={e => setCity(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <input
-              type="text"
-              placeholder="CPF"
-              value={CPFMask(cpf)}
-              onChange={e => setCpf(e.target.value)}
+              placeholder="Telefone"
+              value={PhoneMask(phone)}
+              onChange={e => setPhone(e.target.value)}
               required
             />
 
-            <input
-              type="email"
-              placeholder="E-mail"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
+            <div>
+              <input
+                type="text"
+                placeholder="Endereço"
+                value={address}
+                onChange={e => setAddress(e.target.value)}
+                required
+              />
+
+              <input
+                type="text"
+                placeholder="Cidade"
+                value={city}
+                onChange={e => setCity(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <input
+                type="text"
+                placeholder="CPF"
+                value={CPFMask(cpf)}
+                onChange={e => setCpf(e.target.value)}
+                required
+              />
+
+              <input
+                type="email"
+                placeholder="E-mail"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text">Data de Nascimento</label>
+              <input
+                type="date"
+                placeholder="Data de Nascimento"
+                onChange={e => setBirthdate(e.target.value)}
+                required
+              />
+            </div>
+            <input type="submit" value="Cadastrar usuário" className="btn"></input>
           </div>
 
-          <div>
-            <label className="text">Data de Nascimento</label>
-            <input
-              type="date"
-              placeholder="Data de Nascimento"
-              onChange={e => setBirthdate(e.target.value)}
-              required
-            />
+          {/* Formulário com dados da Academia */}
+          <div className="form-container">
+            <h4 className="sub-heading">Selecione as modalidades</h4>
+
+            <div className="check-label">
+              {Object.values(modalities).map(modalitie => (
+                <label className="label-container" key={modalitie.name}>
+                  {modalitie.name}
+
+                  <input
+                    type="checkbox"
+                    name={modalitie.name}
+                    onClick={check}
+                  />
+                  <span className="checkmark"></span>
+                </label>
+              ))}
+            </div>
           </div>
-          <input type="submit" value="Cadastrar usuário" className="btn"></input>
-        </div>
-
-        {/* Formulário com dados da Academia */}
-        <div className="form-container">
-          <h4 className="sub-heading">Selecione as modalidades</h4>
-
-          <div className="check-label">
-            {Object.values(modalities).map(modalitie => (
-              <label className="label-container" key={modalitie.name}>
-                {modalitie.name}
-
-                <input
-                  type="checkbox"
-                  name={modalitie.name}
-                  onClick={check}
-                />
-                <span className="checkmark"></span>
-              </label>
-            ))}
-          </div>
-        </div>
-      </form>
-    </main>
+        </form>
+      </main>
+    </div >
   )
 }
 

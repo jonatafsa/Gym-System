@@ -19,9 +19,11 @@ import {
   UilUsersAlt,
   UilDollarAlt,
   UilDownloadAlt,
-  UilTopArrowFromTop,
+  UilTopArrowFromTop
 } from '@iconscout/react-unicons'
 import { PriceMask } from "../services/masks";
+import Navigation from "../components/navigation";
+import Header from "../components/header";
 
 type Users = {
   name: string
@@ -50,6 +52,7 @@ export default function Home() {
   const [avenuePercent, setAvenuePercent] = useState("")
   const [positivePercent, setPositivePercent] = useState("")
   const [negativePercent, setNegativePercent] = useState("")
+  const [registeredUsers, setRegisteredUsers] = useState("")
 
   useEffect(() => {
     const db = getDatabase()
@@ -76,13 +79,16 @@ export default function Home() {
     const actualDate = new Date()
 
     for (let x = 0; x < 6; x++) {
-      let month = new Date(new Date().setMonth(actualDate.getMonth() - (x + 1)))
+      let shortMonth = new Date(new Date().setMonth(actualDate.getMonth() - (x + 1)))
         .toLocaleDateString('pt-br', { month: "short" })
+
+      let longMonth = new Date(new Date().setMonth(actualDate.getMonth() - (x + 1)))
+        .toLocaleDateString('pt-br', { month: "long" })
 
       let year = new Date(new Date().setMonth(actualDate.getMonth() - (x + 1)))
         .toLocaleDateString('pt-br', { year: "numeric" })
 
-      labelsArr.push({ name: month, year })
+      labelsArr.push({ shortName: shortMonth, year, name: longMonth })
     }
 
     setLastMonts(labelsArr)
@@ -104,13 +110,14 @@ export default function Home() {
       let atualDay = new Date(data)
       let birthdaysWeek = data.setDate(data.getDate() + 7)
       let userBirthdate = new Date(res.birthdate)
-      let fixUserBrithdate = data.setDate(userBirthdate.getDate() + 2)
-      let birthdate = new Date(fixUserBrithdate).setFullYear(2022)
+      // let fixUserBrithdate = data.setDate(userBirthdate.getDate() + 2)
+      let birthdate = new Date(userBirthdate).setFullYear(2022)
 
       if (birthdate > new Date(atualDay).getTime() && birthdate < birthdaysWeek) {
         birthdays.push(res)
       }
     })
+
 
     setPendingUser(pendingUser)
     setBirthdays(birthdays)
@@ -127,7 +134,7 @@ export default function Home() {
       const staff = Object.values(data.staff)
 
       for (let x = 0; x < lastMonts.length; x++) {
-        var month = lastMonts[x].name.replace(".", "")
+        var month = lastMonts[x].shortName.replace(".", "")
         var year = lastMonts[x].year
 
         const positiveValues = Object.values(data["external-values"].positive[year][month] || [])
@@ -186,7 +193,7 @@ export default function Home() {
 
     })
 
-    onValue(closedMontsRef, res => {
+    get(closedMontsRef).then(res => {
       const data = res.val()
       const date = new Date()
       const setClosedMonth = date.setMonth(date.getMonth() - 1)
@@ -211,18 +218,22 @@ export default function Home() {
       setPositivePercent(positivePercent)
       setNegativePercent(negativePercent)
       setLabels(data)
+      console.log(data)
     })
 
-    onValue(dbRef, res => {
+    get(dbRef).then(res => {
       const data: any = Object.values(res.val().users)
-      const dataLength:any = []
+      const dataLength: any = []
+      const referenceLength: any = []
       const date = new Date()
       const setClosedMonth = new Date(date.setMonth(date.getMonth() - 1))
-      const lastDay = new Date(setClosedMonth.getFullYear(), setClosedMonth.getMonth() + 1, 0);
+      const setReferenceMonth = new Date(date.setMonth(date.getMonth() - 2))
+      const lastDay = new Date(setClosedMonth.getFullYear(), setClosedMonth.getMonth() + 1, 0)
+      const referencetDay = new Date(setReferenceMonth.getFullYear(), setReferenceMonth.getMonth() + 1, 0)
 
-      for(let x = 0; x < data.length; x++) {
+      for (let x = 0; x < data.length; x++) {
         let registered = new Date(data[x].registeredIn)
-                
+
         let month = registered.getDay()
         let day = registered.getMonth()
         let year = registered.getFullYear()
@@ -232,12 +243,18 @@ export default function Home() {
         const finalDate = new Date(setNewMonth.setFullYear(year))
 
         // console.log("Data fechamento: " + lastDay)
-        if(finalDate < lastDay) {
+        if (finalDate < lastDay) {
           dataLength.push(x)
+        }
+
+        if (finalDate < referencetDay) {
+          referenceLength.push(x)
         }
       }
 
-      console.log(dataLength)
+      const usersPercent = ((dataLength.length - referenceLength.length) / referenceLength.length * 100).toFixed(2)
+
+      setRegisteredUsers(usersPercent)
 
     })
   }, [lastMonts])
@@ -249,7 +266,7 @@ export default function Home() {
     Title,
     Tooltip,
     Legend
-  );
+  )
 
   const options = {
     responsive: true,
@@ -259,12 +276,29 @@ export default function Home() {
       },
       ResizeObserverSize
     },
+    scales: {
+      y: {
+        ticks: {
+          // Formatação para Real brasileior com o a Máscara
+          callback: function (value: any) {
+            return PriceMask(value);
+          }
+        }
+      },
+      xAxes: {
+        ticks: {
+          // Formatação para Real brasileior com o a Máscara
+          callback: function (value: any) {
+            return PriceMask(value);
+          }
+        }
+      }
+    }
   }
-
 
   const data = {
     labels: Object.keys(labels),
-    TData: "labels.name",
+    TData: "labels.shortName",
     datasets: [
       {
         label: 'Matrículas',
@@ -294,149 +328,165 @@ export default function Home() {
   };
 
   return (
-    <main>
+    <div className="container" >
+      <Navigation />
+      <main>
+        <Header />
 
-      <div className="top-painel">
-        <div className="painel-header">
-          <h1 className="sub-heading">Painel</h1>
-          <input type="date" />
-        </div>
+        <div className="top-painel">
+          <div className="painel-header">
+            <h1 className="sub-heading">Painel</h1>
+            <select>
+              {lastMonts.map(month => (
+                <option value={month.name}>{month.name}</option>
+              ))}
+            </select>
+          </div>
 
-        <div className="painel-content">
-          <div className="cards">
-            <div className="box">
-              <div className="box-icon"><UilUsersAlt /></div>
-              <span className="text">Clientes</span>
-              <h2 className="text">{users.length}</h2>
-              <div className="box-footer positive">
-                <svg version="1.1" id="Capa_1" x="15px" y="15px"
-                  viewBox="0 0 26.775 26.775">
-                  <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+          <div className="painel-content">
+            <div className="cards">
+              <div className="box">
+                <div className="box-icon"><UilUsersAlt /></div>
+                <span className="text">Clientes</span>
+                <h2 className="text">{users.length}</h2>
+                <div className="box-footer positive">
+                  <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                    viewBox="0 0 26.775 26.775">
+                    <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
                 c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
                 c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
                 C13.24-0.414,13.915,0.379,13.915,0.379z"/>
-                </svg>
-                <p><strong>5,7%</strong> Desde o mês anterior</p>
+                  </svg>
+                  <p><strong>{registeredUsers}%</strong> Desde o mês anterior</p>
+                </div>
               </div>
-            </div>
 
-            <div className="box">
-              <div className="box-icon"><UilDollarAlt /></div>
-              <span className="text">Receita mensal</span>
-              <h2 className="text">
-                {PriceMask(monthlyRevenue)}
-              </h2>
-              {Math.sign(+avenuePercent) === 1 ? (
-                <div className="box-footer positive">
-                  <svg version="1.1" id="Capa_1" x="15px" y="15px"
-                    viewBox="0 0 26.775 26.775">
-                    <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+              <div className="box">
+                <div className="box-icon"><UilDollarAlt /></div>
+                <span className="text">Receita mensal</span>
+                <h2 className="text">
+                  {PriceMask(monthlyRevenue)}
+                </h2>
+                {Math.sign(+avenuePercent) === 1 ? (
+                  <div className="box-footer positive">
+                    <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                      viewBox="0 0 26.775 26.775">
+                      <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
               c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
               c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
               C13.24-0.414,13.915,0.379,13.915,0.379z"/>
-                  </svg>
-                  <p><strong>{avenuePercent === 'Infinity' ? "100%" : (avenuePercent)}</strong> Desde o mês anterior</p>
-                </div>
-              ) : (
-                <div className="box-footer negative">
-                  <svg version="1.1" id="Capa_1" x="15px" y="15px"
-                    viewBox="0 0 26.775 26.775">
-                    <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+                    </svg>
+                    <p><strong>{avenuePercent === 'Infinity' ? "100%" : (avenuePercent)}</strong> Desde o mês anterior</p>
+                  </div>
+                ) : (
+                  <div className="box-footer negative">
+                    <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                      viewBox="0 0 26.775 26.775">
+                      <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
                 c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
                 c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
                 C13.24-0.414,13.915,0.379,13.915,0.379z"/>
-                  </svg>
-                  <p><strong>{avenuePercent}%</strong> Desde o mês anterior</p>
-                </div>
-              )}
-            </div>
+                    </svg>
+                    <p><strong>{avenuePercent}%</strong> Desde o mês anterior</p>
+                  </div>
+                )}
+              </div>
 
-            <div className="box">
-              <div className="box-icon"><UilDownloadAlt /></div>
-              <span className="text">Entrada externa</span>
-              <h2 className="text">{PriceMask(positiveExtra)}</h2>
-              {Math.sign(+positivePercent) === 1 ? (
-                <div className="box-footer positive">
-                  <svg version="1.1" id="Capa_1" x="15px" y="15px"
-                    viewBox="0 0 26.775 26.775">
-                    <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+              <div className="box">
+                <div className="box-icon"><UilDownloadAlt /></div>
+                <span className="text">Entrada externa</span>
+                <h2 className="text">{PriceMask(positiveExtra)}</h2>
+                {Math.sign(+positivePercent) === 1 ? (
+                  <div className="box-footer positive">
+                    <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                      viewBox="0 0 26.775 26.775">
+                      <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
               c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
               c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
               C13.24-0.414,13.915,0.379,13.915,0.379z"/>
-                  </svg>
-                  <p><strong>{positivePercent === 'Infinity' ? "100%" : (positivePercent)}</strong> Desde o mês anterior</p>
-                </div>
-              ) : (
-                <div className="box-footer negative">
-                  <svg version="1.1" id="Capa_1" x="15px" y="15px"
-                    viewBox="0 0 26.775 26.775">
-                    <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+                    </svg>
+                    <p><strong>{positivePercent === 'Infinity' ? "100%" : (positivePercent)}</strong> Desde o mês anterior</p>
+                  </div>
+                ) : (
+                  <div className="box-footer negative">
+                    <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                      viewBox="0 0 26.775 26.775">
+                      <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
                 c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
                 c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
                 C13.24-0.414,13.915,0.379,13.915,0.379z"/>
-                  </svg>
-                  <p><strong>{positivePercent}%</strong> Desde o mês anterior</p>
-                </div>
-              )}
-            </div>
+                    </svg>
+                    <p><strong>{positivePercent}%</strong> Desde o mês anterior</p>
+                  </div>
+                )}
+              </div>
 
-            <div className="box">
-              <div className="box-icon"><UilTopArrowFromTop /></div>
-              <span className="text">Saida externa</span>
-              <h2 className="text">{PriceMask(negativeExtra)}</h2>
-              {Math.sign(+negativePercent) === 1 ? (
-                <div className="box-footer positive">
-                  <svg version="1.1" id="Capa_1" x="15px" y="15px"
-                    viewBox="0 0 26.775 26.775">
-                    <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+              <div className="box">
+                <div className="box-icon"><UilTopArrowFromTop /></div>
+                <span className="text">Saida externa</span>
+                <h2 className="text">{PriceMask(negativeExtra)}</h2>
+                {Math.sign(+negativePercent) === 1 ? (
+                  <div className="box-footer positive">
+                    <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                      viewBox="0 0 26.775 26.775">
+                      <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
               c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
               c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
               C13.24-0.414,13.915,0.379,13.915,0.379z"/>
-                  </svg>
-                  <p><strong>{negativePercent === 'Infinity' ? "100%" : (negativePercent)}</strong> Desde o mês anterior</p>
-                </div>
-              ) : (
-                <div className="box-footer negative">
-                  <svg version="1.1" id="Capa_1" x="15px" y="15px"
-                    viewBox="0 0 26.775 26.775">
-                    <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+                    </svg>
+                    <p><strong>{negativePercent === 'Infinity' ? "100%" : (negativePercent)}</strong> Desde o mês anterior</p>
+                  </div>
+                ) : (
+                  <div className="box-footer negative">
+                    <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                      viewBox="0 0 26.775 26.775">
+                      <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
                 c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
                 c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
                 C13.24-0.414,13.915,0.379,13.915,0.379z"/>
-                  </svg>
-                  <p><strong>{negativePercent}%</strong> Desde o mês anterior</p>
-                </div>
-              )}
+                    </svg>
+                    <p><strong>{negativePercent}%</strong> Desde o mês anterior</p>
+                  </div>
+                )}
+              </div>
+
             </div>
 
-          </div>
-
-          <div className="graph box">
-            <h2 className="text">Projeções mensais</h2>
-            <Bar options={options} data={data} height={90} />
+            <div className="graph box">
+              <h2 className="text">Projeções mensais</h2>
+              <Bar options={options} data={data} height={90} />
+            </div>
           </div>
         </div>
-      </div>
 
-      {pendingUser.length === 0 ? "" : (
-        <div className="box sub-heading danger">
-          <span className="text"> {pendingUser.length} Usuários com a matrícula vencida</span>
-          <Link to="/user-manager?pendency=true" className="btn secondary-btn"> Ver usuários pendentes </Link>
+        <div className="bottom-painel">
+
+          <h1 className="sub-heading">Área de notificações</h1>
+
+          {birthdays.length === 0 ? "" : (
+            <div className="box sub-heading">
+              <span className="text"> Aniversáriantes da Semana:</span>
+
+              {birthdays.map(user => (
+                <span>
+                  * {new Date(user.birthdate)
+                    .toLocaleDateString('pt-br', { timeZone: "UTC", day: '2-digit', month: '2-digit' })}
+                  - {user.name}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
-      )}
 
-      <div className="box sub-heading primary">
-        <span className="text"> Aniversáriantes da Semana:</span>
+        {pendingUser.length === 0 ? "" : (
+          <div className="box sub-heading danger">
+            <span className="text"> {pendingUser.length} Usuários com a matrícula vencida</span>
+            <Link to="/user-manager?pendency=true" className="btn secondary-btn"> Ver usuários pendentes </Link>
+          </div>
+        )}
 
-        {birthdays.map(user => (
-          <span>
-            * {new Date(user.birthdate)
-              .toLocaleDateString('pt-br', { timeZone: "UTC", day: '2-digit', month: '2-digit' })}
-            - {user.name}
-          </span>
-        ))}
-      </div>
-    </main>
+      </main>
+    </div >
   )
 }
 

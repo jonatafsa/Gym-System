@@ -9,25 +9,15 @@ import InsertNewModalitie from './pages/insert-new-modalities';
 import InsertNewUser from './pages/insert-new-user';
 import Login from './pages/login';
 import UserManager from './pages/user-manager';
-import { UilBars } from '@iconscout/react-unicons'
+
 import ExternalValues from './pages/values-external';
 
 export default function MyRoutes() {
   const { user } = useAuth()
 
-  function toogleNavigation() {
-    const menu = document.querySelector("nav")
-    menu?.classList.toggle("hide")
-  }
-
   return (
     <Router>
-      <Navigation />
-
       <div className="content">
-        <header>
-          <UilBars onClick={toogleNavigation} className="btn-toogle" />
-        </header>
 
         <Routes>
           <Route

@@ -1,6 +1,8 @@
 import { get, getDatabase, onValue, ref, set, update } from "firebase/database"
 import { FormEvent, useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import Header from "../components/header"
+import Navigation from "../components/navigation"
 import { useAuth } from "../hooks/use-auth"
 import { PriceMask } from "../services/masks"
 
@@ -198,139 +200,147 @@ export default function EditModalities() {
   }
 
   return (
-    <main className="two-sections">
+    <div className="container" >
+      <Navigation />
+      <main>
+        <Header />
 
-      <div className="modalities-edit">
-        <h3 className="heading">Editar modalidade</h3>
+        <div className="two-sections">
 
-        <select onChange={loadModalities}>
-          <option value="">Selecione uma modalidade</option>
-          {Object.values(modalities).map(modalitie => (
-            <option value={modalitie.name}>{modalitie.name}</option>
-          ))}
-        </select>
+          <div className="modalities-edit">
+            <h3 className="heading">Editar modalidade</h3>
 
-        {name === "" ? "" : (
+            <select onChange={loadModalities}>
+              <option value="">Selecione uma modalidade</option>
+              {Object.values(modalities).map(modalitie => (
+                <option value={modalitie.name}>{modalitie.name}</option>
+              ))}
+            </select>
 
-          <form onSubmit={registerNewModalitie}>
-            <div className="form-container">
-              <input
-                type="text"
-                placeholder="R$ Valor da mensalidade"
-                value={PriceMask(price)}
-                onChange={e => setPrice(e.target.value)}
-                required
-              />
+            {name === "" ? "" : (
 
-              <select onChange={e => setResponsibleDoc(e.target.value)} required>
-                <option value="" selected>Instrutor ou responsável</option>
-                {responsible.map((res: any) => (
-                  <>
-                    <option value={res.cpf}>
-                      {res.function} - {res.name}
-                    </option>
-                  </>
+              <form onSubmit={registerNewModalitie}>
+                <div className="form-container">
+                  <input
+                    type="text"
+                    placeholder="R$ Valor da mensalidade"
+                    value={PriceMask(price)}
+                    onChange={e => setPrice(e.target.value)}
+                    required
+                  />
+
+                  <select onChange={e => setResponsibleDoc(e.target.value)} required>
+                    <option value="" selected>Instrutor ou responsável</option>
+                    {responsible.map((res: any) => (
+                      <>
+                        <option value={res.cpf}>
+                          {res.function} - {res.name}
+                        </option>
+                      </>
+                    ))}
+                    <option value="">Sem instrutor ou responsável</option>
+                  </select>
+
+                  <div>
+                    <select onChange={e => setDay(e.target.value)}>
+                      <option value="" selected>Dia</option>
+                      <option value="seg">Segunda</option>
+                      <option value="ter">Terça</option>
+                      <option value="qua">Quarta</option>
+                      <option value="qui">Quinta</option>
+                      <option value="sex">Sexta</option>
+                      <option value="sab">Sábado</option>
+                      <option value="dom">Domingo</option>
+                    </select>
+
+                    <input
+                      type="time"
+                      placeholder="Escolha um horário"
+                      onChange={e => setTime(e.target.value)}
+                      value={time}
+                    />
+
+                    <button className="btn" type="button" onClick={insertNewTime}>Inserir</button>
+                  </div>
+
+                  <div>
+                    <button
+                      type="button"
+                      className="btn danger"
+                    >
+                      Excluir modalidade
+                    </button>
+
+                    <button
+                      type="submit"
+                      className="btn"
+                    >
+                      salvar Alterações
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
+
+
+          <div>
+            <h3 className="sub-heading">Agenda da modalidade</h3>
+
+            <div className="schedules">
+              <div className="seg">
+                <h5 className="text">Segunda</h5>
+                {seg.map((time, index) => (
+                  <p className="text"><strong onClick={() => removeTime(index, "seg")} className="close-btn danger small">X</strong> {time}</p>
                 ))}
-                <option value="">Sem instrutor ou responsável</option>
-              </select>
-
-              <div>
-                <select onChange={e => setDay(e.target.value)}>
-                  <option value="" selected>Dia</option>
-                  <option value="seg">Segunda</option>
-                  <option value="ter">Terça</option>
-                  <option value="qua">Quarta</option>
-                  <option value="qui">Quinta</option>
-                  <option value="sex">Sexta</option>
-                  <option value="sab">Sábado</option>
-                  <option value="dom">Domingo</option>
-                </select>
-
-                <input
-                  type="time"
-                  placeholder="Escolha um horário"
-                  onChange={e => setTime(e.target.value)}
-                  value={time}
-                />
-
-                <button className="btn" type="button" onClick={insertNewTime}>Inserir</button>
               </div>
 
-              <div>
-                <button
-                  type="button"
-                  className="btn danger"
-                >
-                  Excluir modalidade
-                </button>
+              <div className="ter">
+                <h5 className="text">Terça</h5>
+                {ter.map((time, index) => (
+                  <p className="text"><strong onClick={() => removeTime(index, "ter")} className="close-btn danger">X</strong> {time}</p>
+                ))}
+              </div>
 
-                <button
-                  type="submit"
-                  className="btn"
-                >
-                  salvar Alterações
-                </button>
+              <div className="qua">
+                <h5 className="text">Quarta</h5>
+                {qua.map((time, index) => (
+                  <p className="text"><strong onClick={() => removeTime(index, "qua")} className="close-btn danger">X</strong> {time}</p>
+                ))}
+              </div>
+
+              <div className="qui">
+                <h5 className="text">Quinta</h5>
+                {qui.map((time, index) => (
+                  <p className="text"><strong onClick={() => removeTime(index, "qui")} className="close-btn danger">X</strong> {time}</p>
+                ))}
+              </div>
+
+              <div className="sex">
+                <h5 className="text">Sexta</h5>
+                {sex.map((time, index) => (
+                  <p className="text"><strong onClick={() => removeTime(index, "sex")} className="close-btn danger">X</strong> {time}</p>
+                ))}
+              </div>
+
+              <div className="sab">
+                <h5 className="text">Sábado</h5>
+                {sab.map((time, index) => (
+                  <p className="text"><strong onClick={() => removeTime(index, "sab")} className="close-btn danger">X</strong> {time}</p>
+                ))}
+              </div>
+
+              <div className="qua">
+                <h5 className="text">Domingo</h5>
+                {dom.map((time, index) => (
+                  <p className="text"><strong onClick={() => removeTime(index, "dom")} className="close-btn danger">X</strong> {time}</p>
+                ))}
               </div>
             </div>
-          </form>
-        )}
-      </div>
-
-
-      <div>
-        <h3 className="sub-heading">Agenda da modalidade</h3>
-
-        <div className="schedules">
-          <div className="seg">
-            <h5 className="text">Segunda</h5>
-            {seg.map((time, index) => (
-              <p className="text"><strong onClick={() => removeTime(index, "seg")} className="close-btn danger small">X</strong> {time}</p>
-            ))}
-          </div>
-
-          <div className="ter">
-            <h5 className="text">Terça</h5>
-            {ter.map((time, index) => (
-              <p className="text"><strong onClick={() => removeTime(index, "ter")} className="close-btn danger">X</strong> {time}</p>
-            ))}
-          </div>
-
-          <div className="qua">
-            <h5 className="text">Quarta</h5>
-            {qua.map((time, index) => (
-              <p className="text"><strong onClick={() => removeTime(index, "qua")} className="close-btn danger">X</strong> {time}</p>
-            ))}
-          </div>
-
-          <div className="qui">
-            <h5 className="text">Quinta</h5>
-            {qui.map((time, index) => (
-              <p className="text"><strong onClick={() => removeTime(index, "qui")} className="close-btn danger">X</strong> {time}</p>
-            ))}
-          </div>
-
-          <div className="sex">
-            <h5 className="text">Sexta</h5>
-            {sex.map((time, index) => (
-              <p className="text"><strong onClick={() => removeTime(index, "sex")} className="close-btn danger">X</strong> {time}</p>
-            ))}
-          </div>
-
-          <div className="sab">
-            <h5 className="text">Sábado</h5>
-            {sab.map((time, index) => (
-              <p className="text"><strong onClick={() => removeTime(index, "sab")} className="close-btn danger">X</strong> {time}</p>
-            ))}
-          </div>
-
-          <div className="qua">
-            <h5 className="text">Domingo</h5>
-            {dom.map((time, index) => (
-              <p className="text"><strong onClick={() => removeTime(index, "dom")} className="close-btn danger">X</strong> {time}</p>
-            ))}
           </div>
         </div>
-      </div>
-    </main>
+
+      </main>
+    </div>
   )
 }

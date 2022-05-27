@@ -1,6 +1,8 @@
 import { getDatabase, onValue, ref, set, update } from "firebase/database"
 import { FormEvent, useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import Header from "../components/header"
+import Navigation from "../components/navigation"
 import { useAuth } from "../hooks/use-auth"
 import { PriceMask } from "../services/masks"
 
@@ -94,8 +96,8 @@ export default function InsertNewModalitie() {
     e.preventDefault()
 
     const db = getDatabase()
-    const dbRef = ref(db,  "gym_users/" + user?.uid + "/modalities/" + name)
-    const dbStaffRef = ref(db,  "gym_users/" + user?.uid + "/staff/" + responsibleDoc)
+    const dbRef = ref(db, "gym_users/" + user?.uid + "/modalities/" + name)
+    const dbStaffRef = ref(db, "gym_users/" + user?.uid + "/staff/" + responsibleDoc)
 
     set(dbRef, {
       name,
@@ -118,123 +120,131 @@ export default function InsertNewModalitie() {
   }
 
   return (
-    <main className="two-sections">
-      <form onSubmit={registerNewModalitie}>
-        <div className="form-container">
-          <h3 className="heading">Inserir nova modalidade</h3>
-          <input
-            type="text"
-            placeholder="Modalidade"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            required
-          />
+    <div className="container" >
+      <Navigation />
+      <main>
+        <Header />
 
-          <input
-            type="text"
-            placeholder="R$ Valor da mensalidade"
-            value={PriceMask(price)}
-            onChange={e => setPrice(e.target.value)}
-            required
-          />
+        <div className="two-sections">
 
-          <select onChange={e => setResponsibleDoc(e.target.value)} required>
-            <option value="" selected>Instrutor ou responsável</option>
-            {responsible.map((res: any) => (
-              <>
-                <option value={res.cpf}>
-                  {res.function} - {res.name}
-                </option>
-              </>
-            ))}
-            <option value="">Sem instrutor ou responsável</option>
-          </select>
+          <form onSubmit={registerNewModalitie}>
+            <div className="form-container">
+              <h3 className="heading">Inserir nova modalidade</h3>
+              <input
+                type="text"
+                placeholder="Modalidade"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                required
+              />
+
+              <input
+                type="text"
+                placeholder="R$ Valor da mensalidade"
+                value={PriceMask(price)}
+                onChange={e => setPrice(e.target.value)}
+                required
+              />
+
+              <select onChange={e => setResponsibleDoc(e.target.value)} required>
+                <option value="" selected>Instrutor ou responsável</option>
+                {responsible.map((res: any) => (
+                  <>
+                    <option value={res.cpf}>
+                      {res.function} - {res.name}
+                    </option>
+                  </>
+                ))}
+                <option value="">Sem instrutor ou responsável</option>
+              </select>
+
+              <div>
+                <select onChange={e => setDay(e.target.value)}>
+                  <option value="" selected>Dia</option>
+                  <option value="seg">Segunda</option>
+                  <option value="ter">Terça</option>
+                  <option value="qua">Quarta</option>
+                  <option value="qui">Quinta</option>
+                  <option value="sex">Sexta</option>
+                  <option value="sab">Sábado</option>
+                  <option value="dom">Domingo</option>
+                </select>
+
+                <input
+                  type="time"
+                  placeholder="Escolha um horário"
+                  onChange={e => setTime(e.target.value)}
+                  value={time}
+                />
+
+                <button className="btn" type="button" onClick={insertNewTime}>Inserir</button>
+              </div>
+
+              <button
+                type="submit"
+                className="btn"
+              >
+                Cadastrar nova modalidade
+              </button>
+            </div>
+          </form>
 
           <div>
-            <select onChange={e => setDay(e.target.value)}>
-              <option value="" selected>Dia</option>
-              <option value="seg">Segunda</option>
-              <option value="ter">Terça</option>
-              <option value="qua">Quarta</option>
-              <option value="qui">Quinta</option>
-              <option value="sex">Sexta</option>
-              <option value="sab">Sábado</option>
-              <option value="dom">Domingo</option>
-            </select>
+            <h3 className="sub-heading">Agenda da modalidade</h3>
 
-            <input
-              type="time"
-              placeholder="Escolha um horário"
-              onChange={e => setTime(e.target.value)}
-              value={time}
-            />
+            <div className="schedules">
+              <div className="seg">
+                <h5 className="text">Segunda</h5>
+                {seg.map(time => (
+                  <p className="text">{time}</p>
+                ))}
+              </div>
 
-            <button className="btn" type="button" onClick={insertNewTime}>Inserir</button>
-          </div>
+              <div className="ter">
+                <h5 className="text">Terça</h5>
+                {ter.map(time => (
+                  <p className="text">* {time}</p>
+                ))}
+              </div>
 
-          <button
-            type="submit"
-            className="btn"
-          >
-            Cadastrar nova modalidade
-          </button>
-        </div>
-      </form>
+              <div className="qua">
+                <h5 className="text">Quarta</h5>
+                {qua.map(time => (
+                  <p className="text">* {time}</p>
+                ))}
+              </div>
 
-      <div>
-        <h3 className="sub-heading">Agenda da modalidade</h3>
+              <div className="qui">
+                <h5 className="text">Quinta</h5>
+                {qui.map(time => (
+                  <p className="text">* {time}</p>
+                ))}
+              </div>
 
-        <div className="schedules">
-          <div className="seg">
-            <h5 className="text">Segunda</h5>
-            {seg.map(time => (
-              <p className="text">{time}</p>
-            ))}
-          </div>
+              <div className="sex">
+                <h5 className="text">Sexta</h5>
+                {sex.map(time => (
+                  <p className="text">* {time}</p>
+                ))}
+              </div>
 
-          <div className="ter">
-            <h5 className="text">Terça</h5>
-            {ter.map(time => (
-              <p className="text">* {time}</p>
-            ))}
-          </div>
+              <div className="sab">
+                <h5 className="text">Sábado</h5>
+                {sab.map(time => (
+                  <p className="text">* {time}</p>
+                ))}
+              </div>
 
-          <div className="qua">
-            <h5 className="text">Quarta</h5>
-            {qua.map(time => (
-              <p className="text">* {time}</p>
-            ))}
-          </div>
-
-          <div className="qui">
-            <h5 className="text">Quinta</h5>
-            {qui.map(time => (
-              <p className="text">* {time}</p>
-            ))}
-          </div>
-
-          <div className="sex">
-            <h5 className="text">Sexta</h5>
-            {sex.map(time => (
-              <p className="text">* {time}</p>
-            ))}
-          </div>
-
-          <div className="sab">
-            <h5 className="text">Sábado</h5>
-            {sab.map(time => (
-              <p className="text">* {time}</p>
-            ))}
-          </div>
-
-          <div className="qua">
-            <h5 className="text">Domingo</h5>
-            {dom.map(time => (
-              <p className="text">* {time}</p>
-            ))}
+              <div className="qua">
+                <h5 className="text">Domingo</h5>
+                {dom.map(time => (
+                  <p className="text">* {time}</p>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   )
 }

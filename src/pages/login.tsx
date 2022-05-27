@@ -25,7 +25,7 @@ export default function Login() {
   }
 
   return (
-    <main>
+    <main className="p-05">
       <form onSubmit={signinUser}>
         <div className="form-container" style={{ width: "500px" }}>
           <h3 className="sub-heading">Entre com seu email e senha</h3>

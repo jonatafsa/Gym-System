@@ -1,6 +1,8 @@
 import { child, get, getDatabase, onValue, ref, set } from "firebase/database"
 import { FormEvent, useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import Header from "../components/header"
+import Navigation from "../components/navigation"
 import { useAuth } from "../hooks/use-auth"
 import { CPFMask, PhoneMask, PriceMask } from "../services/masks"
 
@@ -77,124 +79,130 @@ export default function InsertNewEmployee() {
   }
 
   return (
-    <main className="two-sections">
+    <div className="container" >
+      <Navigation />
+      <main>
+        <Header />
 
-      <div className="category">
-        <h4 className="sub-heading">Selecione uma categoria</h4>
-        <select onChange={e => setCategory(e.target.value)}>
-          <option value="">Selecione uma categoria</option>
-          {categories.map(category => (
-            <>
-              <option
-                value={category.name}
-                key={category.name}
-              >
-                {category.name}
-              </option>
-            </>
-          ))}
-          <option value="insert-new">Inserir nova categoria ++</option>
-        </select>
-      </div>
+        <div className="two-sections">
 
-      {category === "insert-new" ? (
-        <form onSubmit={registerNewJobCategory}>
-          <div className="form-container">
-            <h3 className="heading">Cadastrar nova categoria</h3>
-
-            <input
-              type="text"
-              placeholder="Categoria"
-              value={newCategory}
-              onChange={e => setNewCategory(e.target.value)}
-              required
-            />
-
-            <button
-              type="submit"
-              className="btn"
-            >
-              Cadastrar nova categoria
-            </button>
+          <div className="category">
+            <h4 className="sub-heading">Selecione uma categoria</h4>
+            <select onChange={e => setCategory(e.target.value)}>
+              <option value="">Selecione uma categoria</option>
+              {categories.map(category => (
+                <>
+                  <option
+                    value={category.name}
+                    key={category.name}
+                  >
+                    {category.name}
+                  </option>
+                </>
+              ))}
+              <option value="insert-new">Inserir nova categoria ++</option>
+            </select>
           </div>
-        </form>
-      ) : (
-        category === "" ? "" : (
-          <form onSubmit={registerNewEmployee}>
-            <div className="form-container">
-              <h3 className="heading">Inserir novo usuário</h3>
 
-              <input
-                type="text"
-                placeholder="Nome"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                required
-              />
+          {category === "insert-new" ? (
+            <form onSubmit={registerNewJobCategory}>
+              <div className="form-container">
+                <h3 className="heading">Cadastrar nova categoria</h3>
 
-              <div>
                 <input
                   type="text"
-                  placeholder="Endereço"
-                  value={address}
-                  onChange={e => setAddress(e.target.value)}
+                  placeholder="Categoria"
+                  value={newCategory}
+                  onChange={e => setNewCategory(e.target.value)}
                   required
                 />
-                <input
-                  type="text"
-                  placeholder="Cidade"
-                  value={city}
-                  onChange={e => setCity(e.target.value)}
-                  required
-                />
+
+                <button
+                  type="submit"
+                  className="btn"
+                >
+                  Cadastrar nova categoria
+                </button>
               </div>
+            </form>
+          ) : (
+            category === "" ? "" : (
+              <form onSubmit={registerNewEmployee}>
+                <div className="form-container">
+                  <h3 className="heading">Inserir novo usuário</h3>
 
-              <div>
-                <input
-                  type="text"
-                  placeholder="CPF"
-                  value={CPFMask(cpf)}
-                  onChange={e => setCpf(e.target.value)}
-                  required
-                />
+                  <input
+                    type="text"
+                    placeholder="Nome"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    required
+                  />
 
-                <input
-                  type="text"
-                  placeholder="Telefone"
-                  value={PhoneMask(phone)}
-                  onChange={e => setPhone(e.target.value)}
-                  required
-                />
-              </div>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Endereço"
+                      value={address}
+                      onChange={e => setAddress(e.target.value)}
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="Cidade"
+                      value={city}
+                      onChange={e => setCity(e.target.value)}
+                      required
+                    />
+                  </div>
 
-              <div>
-                <input
-                  type="date"
-                  placeholder="Data de nascimento"
-                  value={birthdate}
-                  onChange={e => setBirthdate(e.target.value)}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Remuneração Base"
-                  value={PriceMask(remuneration)}
-                  onChange={e => setRemuneration(e.target.value)}
-                  required
-                />
-              </div>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="CPF"
+                      value={CPFMask(cpf)}
+                      onChange={e => setCpf(e.target.value)}
+                      required
+                    />
 
-              <button
-                type="submit"
-                className="btn"
-              >
-                Cadastrar novo usuário
-              </button>
-            </div>
-          </form>
-        )
-      )}
+                    <input
+                      type="text"
+                      placeholder="Telefone"
+                      value={PhoneMask(phone)}
+                      onChange={e => setPhone(e.target.value)}
+                      required
+                    />
+                  </div>
 
-    </main>
+                  <div>
+                    <input
+                      type="date"
+                      placeholder="Data de nascimento"
+                      value={birthdate}
+                      onChange={e => setBirthdate(e.target.value)}
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="Remuneração Base"
+                      value={PriceMask(remuneration)}
+                      onChange={e => setRemuneration(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn"
+                  >
+                    Cadastrar novo usuário
+                  </button>
+                </div>
+              </form>
+            )
+          )}
+        </div>
+      </main>
+    </div>
   )
 }
