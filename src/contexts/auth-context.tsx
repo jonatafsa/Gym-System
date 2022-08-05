@@ -1,6 +1,5 @@
 //Hooks Nativos do React
 import { createContext, ReactNode, useEffect, useState } from "react"
-import { Navigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 
 //Import do firebase
@@ -11,8 +10,11 @@ import { app } from "../services/firebase";
 //Definindo o tipo do usuário de contexto
 type User = {
   uid: string
-  email: string | null
+  email: string
   refreshToken: string
+  avatar: string | null
+  name: string | null
+  creationTime: any
 }
 
 //Definindo o tipo do Contexto
@@ -60,8 +62,11 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 
         setUser({
           uid: user.uid,
-          email: user.email,
-          refreshToken: user.refreshToken
+          email: user.email || "",
+          refreshToken: user.refreshToken,
+          avatar: user.photoURL,
+          name: user.displayName,
+          creationTime: user.metadata.creationTime
         })
 
         //Cookie que guarda o token de login
@@ -84,8 +89,11 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
         const user = userCredential.user;
         setUser({
           uid: user.uid,
-          email: user.email,
-          refreshToken: user.refreshToken
+          email: user.email || "",
+          refreshToken: user.refreshToken,
+          avatar: user.photoURL,
+          name: user.displayName,
+          creationTime: user.metadata.creationTime
         })
 
         //Redireciona o usuário para a página inicial

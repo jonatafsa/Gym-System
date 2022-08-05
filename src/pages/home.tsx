@@ -284,20 +284,12 @@ export default function Home() {
           }
         }
       },
-      xAxes: {
-        ticks: {
-          // Formatação para Real brasileior com o a Máscara
-          callback: function (value: any) {
-            return PriceMask(value);
-          }
-        }
-      }
     }
   }
 
   const data = {
     labels: Object.keys(labels),
-    TData: "labels.shortName",
+    TData: "labels.name",
     datasets: [
       {
         label: 'Matrículas',
