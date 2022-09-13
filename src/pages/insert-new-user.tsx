@@ -59,7 +59,7 @@ export default function InsertNewUser() {
       "gym_users/" + user?.uid + "/users/" + clearCPF
     );
     const dbRef = DatabaseRef(database);
-    let date = new Date();
+    let date = new Date().getTime();
 
     var data = {
       registeredIn: date,

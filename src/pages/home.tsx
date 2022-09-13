@@ -139,7 +139,7 @@ export default function Home() {
         const positiveValues = Object.values(data["external-values"].positive[year][month] || [])
         const negativeValues = Object.values(data["external-values"].negative[year][month] || [])
 
-        // console.log(positiveValues)
+        console.log("ABELHA")
 
         if (!data["closed-months"][month]) {
 
