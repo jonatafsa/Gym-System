@@ -170,11 +170,11 @@ export default function UserManager() {
     const payShedulesWithYear = ref(
       db,
       "gym_users/" +
-        user?.uid +
-        "/users/" +
-        id +
-        "/paymentShedules/" +
-        new Date(payment).toLocaleString("pt-br", { year: "numeric" })
+      user?.uid +
+      "/users/" +
+      id +
+      "/paymentShedules/" +
+      new Date(payment).toLocaleString("pt-br", { year: "numeric" })
     );
 
     if (!modalities) {
@@ -480,7 +480,7 @@ export default function UserManager() {
     }
 
     if (e.target.value === "open") {
-      const found = clearUsers.filter((e: any) => !e.userModalities )
+      const found = clearUsers.filter((e: any) => !e.userModalities)
 
       let splitedArray: any = [];
       let max = 8;
@@ -497,7 +497,7 @@ export default function UserManager() {
     }
 
     if (e.target.value === "awaiting") {
-      const found = clearUsers.filter((e: any) => !e.payment )
+      const found = clearUsers.filter((e: any) => !e.payment)
 
       let splitedArray: any = [];
       let max = 8;
@@ -542,7 +542,7 @@ export default function UserManager() {
         {/* __________________________ Tabela com os Clientes __________________________ */}
         <div className="table-header">
           <h4 className="sub-heading">
-            mostrando 8 de {clearUsers.length} usuários
+            mostrando {!users[0] ? 0 : users[0].length} de {clearUsers.length} usuários
           </h4>
           <div className="search">
             <input
@@ -584,103 +584,103 @@ export default function UserManager() {
                 {usersCount === 0
                   ? "Nenhum usuário"
                   : users[pagination].map((user) => (
-                      <tr>
-                        <td>{CPFMask(user.cpf)}</td>
-                        <td>{user.name}</td>
-                        <td>{PhoneMask(user.phone)}</td>
-                        <td>{user.address}</td>
-                        <td>
-                          {user.userModalities ? (
-                            monthlyFee(user.userModalities)
-                          ) : (
-                            <p className="sub-heading danger small">
-                              Não matriculado
-                            </p>
-                          )}
-                        </td>
-                        <td>
-                          {!user.payment ? (
-                            <p className="status">
-                              Aguardando pagamento
-                              <RiErrorWarningLine color="rgb(255, 238, 81)" />
-                            </p>
-                          ) : user.payment <= dueDate ? (
-                            <p className="status">
-                              Pagamento Atrasado
-                              <BiError color="rgb(218, 58, 10)" />
-                            </p>
-                          ) : new Date(user.payment).getMonth() ===
-                              new Date(dueDate).getMonth() &&
-                            new Date().getDate() >
-                              new Date(expirationDate).getDate() &&
-                            new Date().getDate() <
-                              new Date(dueDate).getDate() ? (
-                            <p className="status">
-                              Próximo do vencimento
-                              <RiErrorWarningLine color="rgb(255, 238, 81)" />
-                            </p>
-                          ) : (
-                            <p className="status">
-                              Pagamento em dias
-                              <FiChevronDown color="rgb(10, 218, 97)" />
-                            </p>
-                          )}
-                        </td>
-                        <td className="button-container">
-                          {user.payment > dueDate ? (
-                            ""
-                          ) : (
-                            <button
-                              className="check"
-                              title="Verificar pagamento"
-                              onClick={() => checkUserPayment(user.cpf)}
-                            >
-                              <svg viewBox="0 0 24 24" width="16">
-                                <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
-                              </svg>
-                            </button>
-                          )}
-
-                          {new Date(user.payment).getMonth() ===
-                            new Date(dueDate).getMonth() &&
+                    <tr>
+                      <td>{CPFMask(user.cpf)}</td>
+                      <td>{user.name}</td>
+                      <td>{PhoneMask(user.phone)}</td>
+                      <td>{user.address}</td>
+                      <td>
+                        {user.userModalities ? (
+                          monthlyFee(user.userModalities)
+                        ) : (
+                          <p className="sub-heading danger small">
+                            Não matriculado
+                          </p>
+                        )}
+                      </td>
+                      <td>
+                        {!user.payment ? (
+                          <p className="status">
+                            Aguardando pagamento
+                            <RiErrorWarningLine color="rgb(255, 238, 81)" />
+                          </p>
+                        ) : user.payment <= dueDate ? (
+                          <p className="status">
+                            Pagamento Atrasado
+                            <BiError color="rgb(218, 58, 10)" />
+                          </p>
+                        ) : new Date(user.payment).getMonth() ===
+                          new Date(dueDate).getMonth() &&
                           new Date().getDate() >
-                            new Date(expirationDate).getDate() &&
+                          new Date(expirationDate).getDate() &&
+                          new Date().getDate() <
+                          new Date(dueDate).getDate() ? (
+                          <p className="status">
+                            Próximo do vencimento
+                            <RiErrorWarningLine color="rgb(255, 238, 81)" />
+                          </p>
+                        ) : (
+                          <p className="status">
+                            Pagamento em dias
+                            <FiChevronDown color="rgb(10, 218, 97)" />
+                          </p>
+                        )}
+                      </td>
+                      <td className="button-container">
+                        {user.payment > dueDate ? (
+                          ""
+                        ) : (
+                          <button
+                            className="check"
+                            title="Verificar pagamento"
+                            onClick={() => checkUserPayment(user.cpf)}
+                          >
+                            <svg viewBox="0 0 24 24" width="16">
+                              <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
+                            </svg>
+                          </button>
+                        )}
+
+                        {new Date(user.payment).getMonth() ===
+                          new Date(dueDate).getMonth() &&
+                          new Date().getDate() >
+                          new Date(expirationDate).getDate() &&
                           new Date().getDate() < new Date(dueDate).getDate() ? (
-                            <button
-                              className="check"
-                              title="Verificar pagamento"
-                              onClick={() => checkUserPayment(user.cpf)}
-                            >
-                              <svg viewBox="0 0 24 24" width="16">
-                                <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
-                              </svg>
-                            </button>
-                          ) : (
-                            ""
-                          )}
-
                           <button
-                            className="primary"
-                            title="Ver mais"
-                            onClick={() => checkUser(user.cpf)}
+                            className="check"
+                            title="Verificar pagamento"
+                            onClick={() => checkUserPayment(user.cpf)}
                           >
-                            <svg viewBox="0 0 512 512" width="16">
-                              <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"></path>
+                            <svg viewBox="0 0 24 24" width="16">
+                              <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
                             </svg>
                           </button>
+                        ) : (
+                          ""
+                        )}
 
-                          <button
-                            className="danger"
-                            title="Deletar usuário"
-                            onClick={() => deleteUser(user.cpf)}
-                          >
-                            <svg viewBox="0 0 448 512" width="16">
-                              <path d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path>
-                            </svg>
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                        <button
+                          className="primary"
+                          title="Ver mais"
+                          onClick={() => checkUser(user.cpf)}
+                        >
+                          <svg viewBox="0 0 512 512" width="16">
+                            <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"></path>
+                          </svg>
+                        </button>
+
+                        <button
+                          className="danger"
+                          title="Deletar usuário"
+                          onClick={() => deleteUser(user.cpf)}
+                        >
+                          <svg viewBox="0 0 448 512" width="16">
+                            <path d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path>
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
 

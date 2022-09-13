@@ -1,8 +1,7 @@
-
 main {
   display: flex;
   align-items: center;
-  justify-content: center;
+  margin-top: 4rem;
   transition: .3s;
 
   h1 {
@@ -95,7 +94,7 @@ main {
 
       .pointer {
         cursor: pointer;
-        transition: .3s; 
+        transition: .3s;
 
         &:hover {
           filter: brightness(0.8);
@@ -139,7 +138,7 @@ main {
 .row {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   align-items: flex-start;
 
   .box {
