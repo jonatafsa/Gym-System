@@ -20,11 +20,6 @@ export default function Header() {
     )
   );
 
-  function toogleNavigation() {
-    const menu = document.querySelector("nav");
-    menu?.classList.toggle("hide");
-  }
-
   function toggleMenu() {
     const menu = document.querySelector(".user-links");
     menu?.classList.toggle("show-menu");
@@ -51,7 +46,7 @@ export default function Header() {
 
   return (
     <header>
-      <FaBars size={22} onClick={toogleNavigation} className="btn-toogle" />
+      <FaBars size={30} className="btn-toogle" />
       <div className="user-content">
         {/* <FcClock /> */}
         <AiFillMessage />

@@ -1,8 +1,9 @@
 header {
   width: 100%;
-  height: 3.45rem;
-  background-color: var(--bg-color);
-  border-bottom: 2px solid var(--bg-color-1);
+  height: 4rem;
+  background-color: var(--bg-color-2);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  // border-bottom: 2px solid var(--main-color-2);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -13,8 +14,9 @@ header {
   z-index: 98;
 
   .btn-toogle {
-    color: var(--main-color-1);
+    color: var(--text-color);
     cursor: pointer;
+    margin: 0 1.4rem;
     transition: .3s;
 
     &:hover {
@@ -29,9 +31,10 @@ header {
     justify-content: center;
     gap: 1rem;
     font-size: 1.75rem;
-    color: var(--main-color-1);
+    color: var(--text-color);
 
     img {
+      padding: .3rem;
       margin-left: 1rem;
       height: 100%;
       border-radius: 50%;

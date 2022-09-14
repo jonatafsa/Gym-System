@@ -19,6 +19,7 @@ body {
   --bg-color-1: hsl(var(--hue-1), 100%, 95.5%);
   --bg-color-2: #fff;
   --bg-color-3: hsl(var(--hue-1), 100%, 98%);
+  --bg-color-4: hsl(var(--hue-1), 25%, 15%);
   --bg-color-transparent: rgba(255, 255, 255, 0.6);
   --heading-color: hsl(var(--hue-1), 61%, 24%);
   --text-color: hsl(var(--hue-1), 17%, 63%);
@@ -29,6 +30,7 @@ body.dark {
   --bg-color-1: hsl(var(--hue-1), 21%, 11%);
   --bg-color-2: hsl(var(--hue-1), 23%, 19%);
   --bg-color-3: hsl(var(--hue-1), 23%, 24%);
+  --bg-color-4: #000;
   --bg-color-transparent: hsla(var(--hue-1), 23%, 19%, 0.6);
   --heading-color: hsl(var(--hue-1), 100%, 95%);
   --text-color: hsl(var(--hue-1), 14%, 51%);
@@ -112,7 +114,7 @@ ul {
   flex-direction: row;
   justify-content: space-between;
   // align-items: center;
-  background-color: var(--bg-color);
+  background-color: var(--bg-color-2);
 }
 
 .content {
@@ -151,6 +153,8 @@ main {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  // margin-left: 6rem;
+  padding: 1rem 1rem 0 6rem;
 }
 
 /* _________________________ REUSABLE SCSS _________________________ */
@@ -238,57 +242,77 @@ main {
 nav {
   display: flex;
   flex-direction: column;
-  width: 18rem;
-  height: 100%;
-  background-color: var(--bg-color-2);
-  border-right: 2px solid var(--bg-color-1);
-  transition: .5s;
-  overflow: hidden;
-  box-shadow: 4px 6px 20px rgba(#000000, 0.3);
+  width: 19rem;
+  height: 100vh;
+  transition: .5s ease-in-out;
+  // overflow: hidden;
+  background-color: var(--bg-color-4);
+  border-right: 2px solid var(--main-color-2);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
 
-  h3 {
-    width: 100%;
-    height: 3.45rem;
-    padding: .5rem;
-    background-color: var(--bg-color);
-    border-bottom: 2px solid var(--bg-color-1);
-    border-right: 1px solid var(--bg-color-1);
+  &:hover ul {
+    pointer-events: all;
+  }
+
+  .toggle-icon {
+    color: var(--main-color-2);
+    font-size: 2.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    transition: .3s;
+    transform: rotate(180deg);
+
+    &:hover {
+      filter: brightness(.7)
+    }
   }
 
   ul {
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: 1.25rem;
     padding-top: 2.75rem;
     opacity: 1;
-    transition: .3s;
+    transition: .6s;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 18rem;
+    height: calc(100% - 3.45rem);
+    pointer-events: none;
 
     li {
       position: relative;
       display: flex;
       align-items: center;
+      justify-content: flex-start;
+      gap: 1.20rem;
+      cursor: pointer;
 
       margin: 0 1rem;
-      text-transform: uppercase;
-      font-size: 0.75rem;
       letter-spacing: 0.5px;
-      color: var(--text-color);
       font-weight: 500;
       opacity: .9;
-      transition: .2s;
+      transition: .3s;
 
       &::after {
         content: "";
         position: absolute;
         width: 0;
-        height: 10px;
+        height: 50px;
         border-radius: 5px;
-        background-color: var(--main-color-1);
+        background-color: var(--main-color-2);
         bottom: 0;
         left: -5px;
         z-index: -1;
         opacity: 0;
-        transition: .3s;
+        transition: .5s ease;
+        transform: translateY(5px);
       }
 
       &:hover {
@@ -296,24 +320,61 @@ nav {
 
         &::after {
           width: 100%;
-          opacity: .2;
+          opacity: 1;
+        }
+
+        .icon {
+          opacity: 1;
+        }
+
+        .text {
+          color: #000;
+          opacity: 1;
         }
       }
-    }
 
-    a {
-      display: block;
-      padding: 10px 12px;
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--main-color-1);
+        border-right: 2px solid var(--main-color-2);
+        padding: .65rem;
+        width: 24%;
+        height: 50px;
+        font-size: 3rem;
+        border-radius: .5rem;
+        overflow: hidden;
+        color: #FFF;
+        opacity: .6;
+        transition: .3s;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .text {
+        width: 70%;
+        font-size: .85rem;
+        opacity: 1;
+        transition: .6s;
+      }
     }
   }
 }
 
 .hide {
-  width: 0;
+  width: 6rem;
+  // box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.hide ul {
+.hide ul li .text {
   opacity: 0;
+}
+
+.hide .toggle-icon {
+  transform: rotate(0);
 }
 
 .list-user {
@@ -556,7 +617,6 @@ form {
 }
 
 .box {
-  background-color: var(--bg-color-2);
   padding: 1.85rem 2.25rem;
   border-radius: 8px;
   width: 100%;
@@ -565,6 +625,7 @@ form {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  background-color: var(--bg-color-3);
 }
 
 .danger:hover.box {
@@ -1134,16 +1195,18 @@ main.open-delete .slider-wrap-delete {
       align-items: center;
       gap: 1rem;
       width: 100%;
-      height: 350px;
 
       .box {
         display: flex;
         max-width: 46%;
-        height: 46%;
+        height: 50%;
         position: relative;
+        border-bottom: 4px solid var(--main-color-2);
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
         h2 {
-          font-size: 1.9rem;
+          font-size: 1.5rem;
+          padding-bottom: .5rem;
         }
 
         .box-footer {
@@ -1155,6 +1218,23 @@ main.open-delete .slider-wrap-delete {
           justify-content: center;
           color: var(--text-color);
           font-size: .8rem;
+
+          a {
+            background-color: var(--main-color-2);
+            color: var(--text-color);
+            padding: .5rem 1rem;
+            border-radius: .5rem;
+            transition: .3s;
+
+            &:hover {
+              color: #000;
+              filter: brightness(.9);
+            }
+          }
+
+          .hide {
+            display: none;
+          }
         }
 
         .box-icon {
@@ -1166,10 +1246,10 @@ main.open-delete .slider-wrap-delete {
           right: 20px;
           width: 45px;
           height: 45px;
-          background-color: var(--bg-color-1);
+          background-color: var(--main-color-2);
           color: var(--main-color-1);
-          padding: .5rem;
-          border-radius: 8px;
+          padding: .2rem;
+          border-radius: .5rem;
         }
       }
     }
@@ -1181,6 +1261,10 @@ main.open-delete .slider-wrap-delete {
       height: 345px;
       padding: 1rem;
       overflow: hidden;
+      border-top: 1px solid var(--main-color-2);
+      border-bottom: 2px solid var(--main-color-2);
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      background-color: var(--bg-color-2);
 
       h2 {
         font-size: 1.45rem;

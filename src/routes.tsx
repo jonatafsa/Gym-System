@@ -19,76 +19,76 @@ export default function MyRoutes() {
 
   return (
     <Router>
-      <div className="content">
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute user={user?.refreshToken}>
+              <Home />
+            </ProtectedRoute>
+          } />
 
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute user={user?.refreshToken}>
-                <Home />
-              </ProtectedRoute>
-            } />
+        <Route
+          path="insert-new-user"
+          element={
+            <ProtectedRoute user={user?.refreshToken}>
+              <InsertNewUser />
+            </ProtectedRoute>
+          } />
 
-          <Route
-            path="insert-new-user"
-            element={
-              <ProtectedRoute user={user?.refreshToken}>
-                <InsertNewUser />
-              </ProtectedRoute>
-            } />
+        <Route
+          path="edit-modalities"
+          element={
+            <ProtectedRoute user={user?.refreshToken}>
+              <EditModalities />
+            </ProtectedRoute>
+          } />
 
-          <Route
-            path="edit-modalities"
-            element={
-              <ProtectedRoute user={user?.refreshToken}>
-                <EditModalities />
-              </ProtectedRoute>
-            } />
-
-          <Route
-            path="user-manager"
-            element={
-              <ProtectedRoute user={user?.refreshToken}>
-                <UserManager />
-              </ProtectedRoute>
-            } />
+        <Route
+          path="user-manager"
+          element={
+            <ProtectedRoute user={user?.refreshToken}>
+              <UserManager />
+            </ProtectedRoute>
+          } />
 
 
-          <Route
-            path="external-values"
-            element={
-              <ProtectedRoute user={user?.refreshToken}>
-                <ExternalValues />
-              </ProtectedRoute>
-            } />
+        <Route
+          path="external-values"
+          element={
+            <ProtectedRoute user={user?.refreshToken}>
+              <ExternalValues />
+            </ProtectedRoute>
+          } />
 
-          <Route
-            path="user"
-            element={
-              <ProtectedRoute user={user?.refreshToken}>
-                <User />
-              </ProtectedRoute>
-            } />
+        <Route
+          path="user"
+          element={
+            <ProtectedRoute user={user?.refreshToken}>
+              <User />
+            </ProtectedRoute>
+          } />
 
-          <Route
-            path="gym"
-            element={
-              <ProtectedRoute user={user?.refreshToken}>
-                <Gym />
-              </ProtectedRoute>
-            } />
+        <Route
+          path="gym"
+          element={
+            <ProtectedRoute user={user?.refreshToken}>
+              <Gym />
+            </ProtectedRoute>
+          } />
 
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </div>
+        <Route path="/login" element={<Login />} />
+      </Routes>
     </Router>
   )
 }
 
-const ProtectedRoute = ({ user, children }: any) => {
-  if (!user) {
-    return <Navigate to="/login" replace />;
+const ProtectedRoute = ({ children }: any) => {
+  const token = Cookies.get('token')
+
+  if (!token) {
+    return <Navigate to="/login" replace />
   }
+
   return children;
 }

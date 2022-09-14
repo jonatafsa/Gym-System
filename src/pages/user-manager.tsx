@@ -73,6 +73,7 @@ export default function UserManager() {
     const dbRef = ref(db, "gym_users/" + user?.uid + "/users");
 
     onValue(dbRef, (res) => {
+
       if (res.exists()) {
         const data: any = Object.values(res.val()).sort((a: any, b: any) => {
           if (a.name > b.name) {
@@ -84,6 +85,7 @@ export default function UserManager() {
           // a must be equal to b
           return 0;
         });
+        console.log("rodei")
 
         let splitedArray: any = [];
         let max = 8;

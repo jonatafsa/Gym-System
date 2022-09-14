@@ -1,32 +1,9 @@
-import { get, getDatabase, onValue, ref, set, update } from "firebase/database"
+import { get, getDatabase, onValue, ref, update } from "firebase/database"
 import { useEffect, useState } from "react"
-import { Link, Navigate } from "react-router-dom"
+import { Bar } from "react-chartjs-2"
+import { FiArrowDown, FiArrowUp, FiDollarSign, FiUsers } from "react-icons/fi"
 import { useAuth } from "../hooks/use-auth"
-
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-
-import {
-  FiUsers,
-  FiDollarSign,
-  FiArrowDown,
-  FiArrowUp
-} from 'react-icons/fi'
-import { PriceMask } from "../services/masks";
-import Navigation from "../components/navigation";
-import Header from "../components/header";
-import Cookies from "js-cookie";
-import CardItem from "../components/card-item";
-import { ImArrowUp } from "react-icons/im";
-import { FcComboChart, FcLineChart } from "react-icons/fc";
+import { PriceMask } from "../services/masks"
 
 type Users = {
   name: string
@@ -40,7 +17,8 @@ type Users = {
   birthdate: any
 }
 
-export default function Home() {
+export default function MonthlyReport() {
+
   const { user } = useAuth()
 
   const [users, setUsers] = useState<Users[]>([])
@@ -263,15 +241,6 @@ export default function Home() {
     })
   }, [lastMonts])
 
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-  )
-
   const options = {
     responsive: true,
     plugins: {
@@ -324,99 +293,125 @@ export default function Home() {
   };
 
   return (
-    <div className="container" >
-      <Navigation />
-      <main>
-        <Header />
+    <div className="top-painel">
+      <div className="painel-header">
+        <h1 className="sub-heading">Painel</h1>
+        <select>
+          {lastMonts.map(month => (
+            <option value={month.name}>{month.name}</option>
+          ))}
+        </select>
+      </div>
 
-        <div className="top-painel">
-          <div className="painel-header">
-            <h1 className="sub-heading">Painel</h1>
-            <select>
-              {lastMonts.map(month => (
-                <option value={month.name}>{month.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="painel-content">
-            <div className="cards">
-
-              <CardItem
-                icon={<FiUsers />}
-                title="Clientes"
-                value={users.length}
-                status="positive"
-                footer={<p><strong>{registeredUsers}%</strong> Desde o mês anterior</p>}
-              />
-
-              <CardItem
-                icon={<FiDollarSign />}
-                title="Receita mensal"
-                value={PriceMask(monthlyRevenue)}
-                status={Math.sign(+avenuePercent) === 1 ? "positive" : "negative"}
-                footer={Math.sign(+avenuePercent) === 1 ?
-                  <p><strong>{avenuePercent === 'Infinity' ? "100%" : (avenuePercent)}</strong> Desde o mês anterior</p>
-                  :
-                  <p><strong>{avenuePercent}%</strong> Desde o mês anterior</p>
-                }
-              />
-
-              <CardItem
-                icon={<FcLineChart />}
-                title="*"
-                value="Relatório Semanal"
-                status="hide"
-                footer={<Link to="./relatório-semanal">Consultar</Link>}
-              />
-
-              <CardItem
-                icon={<FcComboChart />}
-                title="*"
-                value="Relatório Mensal"
-                status="hide"
-                footer={<Link to="./relatório-mensal">Consultar</Link>}
-              />
-
-            </div>
-
-            <div className="graph box">
-              <h2 className="text">Projeções mensais</h2>
-              <Bar options={options} data={data} height={90} />
+      <div className="painel-content">
+        <div className="cards">
+          <div className="box">
+            <div className="box-icon"><FiUsers /></div>
+            <span className="text">Clientes</span>
+            <h2 className="text">{users.length}</h2>
+            <div className="box-footer positive">
+              <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                viewBox="0 0 26.775 26.775">
+                <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+                c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
+                c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
+                C13.24-0.414,13.915,0.379,13.915,0.379z"/>
+              </svg>
+              <p><strong>{registeredUsers}%</strong> Desde o mês anterior</p>
             </div>
           </div>
+
+          <div className="box">
+            <div className="box-icon"><FiDollarSign /></div>
+            <span className="text">Receita mensal</span>
+            <h2 className="text">
+              {PriceMask(monthlyRevenue)}
+            </h2>
+            {Math.sign(+avenuePercent) === 1 ? (
+              <div className="box-footer positive">
+                <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                  viewBox="0 0 26.775 26.775">
+                  <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+              c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
+              c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
+              C13.24-0.414,13.915,0.379,13.915,0.379z"/>
+                </svg>
+                <p><strong>{avenuePercent === 'Infinity' ? "100%" : (avenuePercent)}</strong> Desde o mês anterior</p>
+              </div>
+            ) : (
+              <div className="box-footer negative">
+                <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                  viewBox="0 0 26.775 26.775">
+                  <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+                c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
+                c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
+                C13.24-0.414,13.915,0.379,13.915,0.379z"/>
+                </svg>
+                <p><strong>{avenuePercent}%</strong> Desde o mês anterior</p>
+              </div>
+            )}
+          </div>
+
+          <div className="box">
+            <div className="box-icon"><FiArrowDown /></div>
+            <span className="text">Entrada externa</span>
+            <h2 className="text">{PriceMask(positiveExtra)}</h2>
+            {Math.sign(+positivePercent) === 1 ? (
+              <div className="box-footer positive">
+                <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                  viewBox="0 0 26.775 26.775">
+                  <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+              c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
+              c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
+              C13.24-0.414,13.915,0.379,13.915,0.379z"/>
+                </svg>
+                <p><strong>{positivePercent === 'Infinity' ? "100%" : (positivePercent)}</strong> Desde o mês anterior</p>
+              </div>
+            ) : (
+              <div className="box-footer negative">
+                <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                  viewBox="0 0 26.775 26.775">
+                  <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+                c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
+                c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
+                C13.24-0.414,13.915,0.379,13.915,0.379z"/>
+                </svg>
+                <p><strong>{positivePercent}%</strong> Desde o mês anterior</p>
+              </div>
+            )}
+          </div>
+
+          <div className="box">
+            <div className="box-icon"><FiArrowUp /></div>
+            <span className="text">Saida externa</span>
+            <h2 className="text">{PriceMask(negativeExtra)}</h2>
+            {Math.sign(+negativePercent) === 1 ? (
+              <div className="box-footer positive">
+                <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                  viewBox="0 0 26.775 26.775">
+                  <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+              c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
+              c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
+              C13.24-0.414,13.915,0.379,13.915,0.379z"/>
+                </svg>
+                <p><strong>{negativePercent === 'Infinity' ? "100%" : (negativePercent)}</strong> Desde o mês anterior</p>
+              </div>
+            ) : (
+              <div className="box-footer negative">
+                <svg version="1.1" id="Capa_1" x="15px" y="15px"
+                  viewBox="0 0 26.775 26.775">
+                  <path d="M13.915,0.379l8.258,9.98c0,0,1.252,1.184-0.106,1.184c-1.363,0-4.653,0-4.653,0s0,0.801,0,2.025
+                c0,3.514,0,9.9,0,12.498c0,0,0.184,0.709-0.885,0.709c-1.072,0-5.783,0-6.55,0c-0.765,0-0.749-0.592-0.749-0.592
+                c0-2.531,0-9.133,0-12.527c0-1.102,0-1.816,0-1.816s-2.637,0-4.297,0c-1.654,0-0.408-1.24-0.408-1.24s7.025-9.325,8.001-10.305
+                C13.24-0.414,13.915,0.379,13.915,0.379z"/>
+                </svg>
+                <p><strong>{negativePercent}%</strong> Desde o mês anterior</p>
+              </div>
+            )}
+          </div>
+
         </div>
-
-        <div className="bottom-painel">
-
-          <h1 className="sub-heading">Área de notificações</h1>
-
-          {birthdays.length === 0 ? "" : (
-            <div className="box sub-heading">
-              <span className="text"> Aniversáriantes da Semana:</span>
-
-              {birthdays.map(user => (
-                <span>
-                  * {new Date(user.birthdate)
-                    .toLocaleDateString('pt-br', { timeZone: "UTC", day: '2-digit', month: '2-digit' })}
-                  - {user.name}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {pendingUser.length === 0 ? "" : (
-          <div className="box sub-heading danger">
-            <span className="text"> {pendingUser.length} Usuários com a matrícula vencida</span>
-            <Link to="/user-manager?pendency=true" className="btn secondary-btn"> Ver usuários pendentes </Link>
-          </div>
-        )}
-
-      </main>
-    </div >
+      </div>
+    </div>
   )
 }
-
-
-

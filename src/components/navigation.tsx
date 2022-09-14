@@ -1,20 +1,11 @@
-import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
-import { useAuth } from "../hooks/use-auth";
 
-import { BiHomeAlt, BiUserPin } from "react-icons/bi";
-import { FaUserShield } from "react-icons/fa";
-import { CgInsertAfterR } from "react-icons/cg";
-import {
-  AiOutlineUserAdd,
-  AiOutlinePlusCircle,
-  AiOutlineEdit,
-} from "react-icons/ai";
 import Modal from "./modal";
-import { useState } from "react";
 import InsertNewModalitie from "./insert-new-modalities";
 import InsertNewEmployee from "./insert-new-Employee";
 import { useModal } from "../hooks/use-modal";
+import { FcAddImage, FcBarChart, FcContacts, FcGoodDecision, FcHome, FcManager, FcOrgUnit } from "react-icons/fc";
+import { BiArrowFromLeft } from "react-icons/bi";
 
 export default function Navigation() {
   const { modalChange, modal } = useModal();
@@ -29,46 +20,95 @@ export default function Navigation() {
     }
   }
 
+  function toogleNavigation() {
+    const menu = document.querySelector("nav");
+    menu?.classList.toggle("hide");
+  }
+
   return (
     <nav className="hide">
       <Modal title={modal?.title}> {modal?.content}</Modal>
-      <h3 className="heading">Dashboard</h3>
+      <BiArrowFromLeft className="toggle-icon" onClick={toogleNavigation} />
 
       <ul>
-        <li>
-          <BiHomeAlt size={22} />
-          <Link to="/">Home</Link>
-        </li>
+        <Link to="/">
+          <li>
+            <div className="icon">
+              <FcHome />
+            </div>
+            <div className="text">Home</div>
+          </li>
+        </Link>
 
-        <li>
-          <AiOutlineUserAdd size={22} />
-          <Link to="/insert-new-user">Cadastrar Aluno</Link>
-        </li>
+        <Link to="/insert-new-user">
+          <li>
+            <div className="icon">
+              <FcGoodDecision />
+            </div>
+            <div className="text">
+              Cadastrar Aluno
+            </div>
+
+          </li>
+        </Link>
+
 
         <li onClick={() => modalToggle("modalities")}>
-          <AiOutlinePlusCircle size={22} />
-          <a> Cadastrar nova modalidade </a>
+
+          <div className="icon">
+            <FcAddImage />
+          </div>
+          <div className="text">
+            Cadastrar modalidade
+          </div>
+
         </li>
 
-        <li>
-          <AiOutlineEdit size={22} />
-          <Link to="/edit-modalities">Editar modalidades</Link>
-        </li>
+
+        <Link to="/edit-modalities">
+          <li>
+
+            <div className="icon">
+              <FcOrgUnit />
+            </div>
+            <div className="text">
+              Editar modalidades
+            </div>
+
+          </li>
+        </Link>
 
         <li onClick={() => modalToggle("insert-staff")}>
-          <FaUserShield size={22} />
-          <a> Cadastrar Funcionário </a>
+          <div className="icon">
+            <FcManager />
+          </div>
+          <div className="text">
+            Cadastrar Funcionário
+          </div>
         </li>
 
-        <li>
-          <BiUserPin size={22} />
-          <Link to="/user-manager">Gerenciar usuários</Link>
-        </li>
+        <Link to="/user-manager">
+          <li>
+            <div className="icon">
+              <FcContacts />
+            </div>
+            <div className="text">
+              Gerenciar usuários
+            </div>
 
-        <li>
-          <CgInsertAfterR size={22} />
-          <Link to="/external-values">Inserir valores externos</Link>
-        </li>
+          </li>
+        </Link>
+
+        <Link to="/external-values">
+          <li>
+            <div className="icon">
+              <FcBarChart />
+            </div>
+            <div className="text">
+              Valores externos
+            </div>
+          </li>
+        </Link>
       </ul>
     </nav>
   );
