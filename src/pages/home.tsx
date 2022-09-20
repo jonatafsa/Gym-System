@@ -24,7 +24,7 @@ import { PriceMask } from "../services/masks";
 import Navigation from "../components/navigation";
 import Header from "../components/header";
 import Cookies from "js-cookie";
-import CardItem from "../components/card-item";
+import CardItem from "../components/card-items";
 import { ImArrowUp } from "react-icons/im";
 import { FcComboChart, FcLineChart } from "react-icons/fc";
 
@@ -326,9 +326,9 @@ export default function Home() {
   return (
     <div className="container" >
       <Navigation />
-      <main>
-        <Header />
+      <Header />
 
+      <main>
         <div className="top-painel">
           <div className="painel-header">
             <h1 className="sub-heading">Painel</h1>
@@ -340,8 +340,12 @@ export default function Home() {
           </div>
 
           <div className="painel-content">
-            <div className="cards">
+            <div className="graph box">
+              <h2 className="text">Projeções mensais</h2>
+              <Bar options={options} data={data} height={90} />
+            </div>
 
+            <div className="cards">
               <CardItem
                 icon={<FiUsers />}
                 title="Clientes"
@@ -367,7 +371,7 @@ export default function Home() {
                 title="*"
                 value="Relatório Semanal"
                 status="hide"
-                footer={<Link to="./relatório-semanal">Consultar</Link>}
+                footer={<Link to="./weekly-report">Consultar</Link>}
               />
 
               <CardItem
@@ -378,11 +382,6 @@ export default function Home() {
                 footer={<Link to="./relatório-mensal">Consultar</Link>}
               />
 
-            </div>
-
-            <div className="graph box">
-              <h2 className="text">Projeções mensais</h2>
-              <Bar options={options} data={data} height={90} />
             </div>
           </div>
         </div>

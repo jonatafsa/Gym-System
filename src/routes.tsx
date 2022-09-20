@@ -13,6 +13,7 @@ import User from './pages/user';
 import UserManager from './pages/user-manager';
 
 import ExternalValues from './pages/values-external';
+import WeeklyReport from './pages/weekly-report';
 
 export default function MyRoutes() {
   const { user } = useAuth()
@@ -74,6 +75,14 @@ export default function MyRoutes() {
           element={
             <ProtectedRoute user={user?.refreshToken}>
               <Gym />
+            </ProtectedRoute>
+          } />
+
+        <Route
+          path="weekly-report"
+          element={
+            <ProtectedRoute user={user?.refreshToken}>
+              <WeeklyReport />
             </ProtectedRoute>
           } />
 

@@ -29,16 +29,17 @@ export default function ExternalValues() {
 
     const db = getDatabase()
     const dbRef = ref(db,
-      "gym_users/" + user?.uid + "/external-values/positive/" +
-      new Date().getFullYear() + "/" +
-      new Date().toLocaleDateString('pt-br', { month: 'short' }).replace(".", "")
-      + "/" + new Date()
+      "gym_users/" + user?.uid + "/external-values/positive/" + new Date().getTime()
     )
 
     set(dbRef, {
       name,
       newValue: newValue.replace('.', '').replace(',', '').replace(/\D/g, ''),
-      date: new Date().toLocaleDateString("pt-br")
+      date: `${new Date().toLocaleDateString('pt-br', { month: 'long', day: 'numeric' })} - ${new Date().toLocaleTimeString("pt-br", {
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+        }`
     }).then(() => {
       toast.success("Novo valor positivo registrado!!!")
       setCategory("")
@@ -51,16 +52,17 @@ export default function ExternalValues() {
 
     const db = getDatabase()
     const dbRef = ref(db,
-      "gym_users/" + user?.uid + "/external-values/negative/" +
-      new Date().getFullYear() + "/" +
-      new Date().toLocaleDateString('pt-br', { month: 'short' }).replace(".", "")
-      + "/" + new Date()
+      "gym_users/" + user?.uid + "/external-values/negative/" + new Date().getTime()
     )
 
     set(dbRef, {
       name,
       newValue: newValue.replace('.', '').replace(',', '').replace(/\D/g, ''),
-      date: new Date().toLocaleDateString("pt-br")
+      date: `${new Date().toLocaleDateString('pt-br', { month: 'long', day: 'numeric' })} - ${new Date().toLocaleTimeString("pt-br", {
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+        }`
     }).then(() => {
       toast.success("Novo valor positivo registrado!!!")
       setCategory("")

@@ -1,9 +1,11 @@
+import '../styles/components/loading.scss'
+
 export default function Loading() {
   return (
-    <div className="loading">
-      <div className="ring">
-        Loading
-        <span></span>
+    <div className="loading-container">
+      <div className="loading-content">
+        <div className="loading"></div>
+        <div id="loading-text">loading</div>
       </div>
     </div>
   );

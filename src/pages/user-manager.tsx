@@ -85,7 +85,6 @@ export default function UserManager() {
           // a must be equal to b
           return 0;
         });
-        console.log("rodei")
 
         let splitedArray: any = [];
         let max = 8;
@@ -101,19 +100,7 @@ export default function UserManager() {
     });
 
     let date = new Date();
-    let getDay = new Date(date).getDate();
-    let nextMouth = new Date(date).setMonth(date.getMonth() + 1);
-    let dueDate = new Date(nextMouth).setDate(5);
-
-    if (getDay > 5) {
-      setDueDate(dueDate);
-    }
-
-    if (getDay <= 5) {
-      setDueDate(new Date(date).setDate(5));
-      var expiration = new Date().setDate(1);
-      setExpirationDate(expiration);
-    }
+    setDueDate(new Date(date).setDate(5));
 
     const dbModalitiesRef = ref(db, "gym_users/" + user?.uid + "/modalities");
 
@@ -155,103 +142,97 @@ export default function UserManager() {
     });
   }
 
+  //Função que faz o resgistro de pagamento do usuário
   function confirmPayment(id: string, payment: number, modalities: any) {
-    const updatePayment = monthlyFee(modalities);
-    const paymnetValue = updatePayment.props.children;
 
-    const modal = document.querySelector("main");
-    modal?.classList.remove("open-payment");
-    setUser(null);
-
-    const db = getDatabase();
-    const dbRef = ref(db, "gym_users/" + user?.uid + "/users/" + id);
-    const payShedules = ref(
-      db,
-      "gym_users/" + user?.uid + "/users/" + id + "/paymentShedules"
-    );
-    const payShedulesWithYear = ref(
-      db,
-      "gym_users/" +
-      user?.uid +
-      "/users/" +
-      id +
-      "/paymentShedules/" +
-      new Date(payment).toLocaleString("pt-br", { year: "numeric" })
-    );
-
+    //Verifica se o usuário está cadastrado em alguma modalidade
+    //Acaso não estiver retorna um Toast com erro!!!
     if (!modalities) {
       toast.error("Usuário não matriculado em nenhuma modalidade!!");
       return;
     }
 
-    //Se o pagamento for UNDEFINED vou guardar o pagamento recebido com as datas desse mês
-    if (!payment) {
-      let month = new Date().getMonth();
-      let dueMonth = new Date(dueDate).getMonth();
-      let setDuemonth = new Date(dueDate).setMonth(dueMonth + 1);
-      let paymentDay =
-        month === dueMonth
-          ? new Date(setDuemonth).setDate(6)
-          : new Date(dueDate).setDate(6);
-      // const actualPrice = monthlyFee(DBuser?.userModalities)
-      let actualPrice = "";
+    //Constatntes responsáveis por buscar e guardar os valores das modalidades
+    const updatePayment = monthlyFee(modalities);
+    const paymnetValue = updatePayment.props.children;
 
+    //Definindo a data de agora para usar posteriormente
+    const date = new Date().getTime()
+
+    //Fecha o modal de pagamento
+    const modal = document.querySelector("main");
+    modal?.classList.remove("open-payment");
+    //Limpa o usuário pago do contexto
+    setUser(null);
+
+    //Pega as referêcnias do usuário no Firebase
+    const db = getDatabase();
+    const dbRef = ref(db, "gym_users/" + user?.uid + "/users/" + id);
+
+    //Contante com a referência da lista de pagamento do usuário
+    const payShedules = ref(
+      db, "gym_users/" + user?.uid + "/users/" + id + "/paymentShedules"
+    );
+    //Constatnte com a referencia de pagamento a ser registrado
+    const payShedulesDate = ref(
+      db, "gym_users/" + user?.uid + "/users/" + id + "/paymentShedules/" + date
+    );
+
+    //Se o usuário nunca tiver feito um pagamento vou registrar o primeiro pagamento
+    //Condição que verifica se o usuário já tem algum pagamento registrado
+    if (!payment) {
+
+      //Função que faz o Update da data de pagamento no firebase
       update(dbRef, {
-        payment: paymentDay,
+        payment: date,
       })
+        //Resposta caso o Update dê certo
         .then(() => {
-          let date = String(
-            new Date().toLocaleString("pt-br", { month: "short" })
-          ).replace(".", "");
-          let year = String(
-            new Date().toLocaleString("pt-br", { year: "numeric" })
-          );
+          //Função que faz o primeiro pagamento na lista de pagamentos
           update(payShedules, {
-            [year]: {
-              [date]: paymnetValue
-                .replace(".", "")
-                .replace(",", "")
-                .replace(/\D/g, ""),
-            },
-          }).then(() => {
-            toast.success(
-              `Pagamento do mês ${new Date(paymentDay).toLocaleDateString(
-                "pt-br",
-                {
-                  month: "long",
-                }
-              )} registrado!!`
-            );
-          });
+            [date]:
+              paymnetValue.replace(".", "").replace(",", "").replace(/\D/g, ""),
+          })
+            //Resposta de sucesso mostra mensagem em Toast
+            .then(() => {
+              toast.success(
+                `Pagamento do mês ${new Date(date).toLocaleDateString(
+                  "pt-br", { month: "long" })} registrado!!`
+              );
+            });
         })
+        //Resposta caso o Update dê errado
         .catch((err) => {
           toast.error("Erro ao registrar: " + err.code);
         });
 
+      //Retorno que fecha a lógica de registrar o pagamento
       return;
     }
 
+    //Se o usuário já tiver feito um pagamento eu vou registrar o próximo pagamento
+    //constante que pega a última data de pagamento e soma mais um mês
     let upMonth = new Date(payment).setMonth(new Date(payment).getMonth() + 1);
 
+    //Função que atualiza a última data de pagamento do usuário
     update(dbRef, {
       payment: upMonth,
-    }).then(() => {
-      let date = String(
-        new Date(payment).toLocaleString("pt-br", { month: "short" })
-      ).replace(".", "");
-      update(payShedulesWithYear, {
-        [date]: paymnetValue
-          .replace(".", "")
-          .replace(",", "")
-          .replace(/\D/g, ""),
+    })
+      //Caso de tudo certo na atualização data de pagamento
+      .then(() => {
+        //Função que adiciona um pagamento a lista de pagamentos do usuário
+        update(payShedules, {
+          [date]: paymnetValue.replace(".", "").replace(",", "").replace(/\D/g, ""),
+        })
+          //Mensagem de sucesso, caso dê tudo certo
+          .then(() => {
+            toast.success(
+              `Pagamento do mês de ${new Date(payment).toLocaleDateString("pt-br", {
+                month: "long",
+              })} registrado!!`
+            );
+          })
       });
-    });
-
-    toast.success(
-      `Pagamento do mês de ${new Date(payment).toLocaleDateString("pt-br", {
-        month: "long",
-      })} registrado!!`
-    );
   }
 
   function deleteUser(cpf: string) {
