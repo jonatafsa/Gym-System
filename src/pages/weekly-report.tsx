@@ -16,7 +16,6 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import faker from '@faker-js/faker';
 
 import "../styles/reports.scss";
 
@@ -32,9 +31,25 @@ export default function WeeklyReport() {
 
   const { user } = useAuth()
 
-  const [weeklyValuesLabels, setWeeklyValuesLabels] = useState<WeeklyValuesLabelsProps[]>([])
+  const [weeklyValuesLabels, setWeeklyValuesLabels] = useState<any>({
+    "Semana Passada": {
+      name: "Semana Atual",
+      payment: 0,
+      positive: 0,
+      negative: 0,
+      users: 0
+    },
+    "Semana Atual": {
+      name: "Semana Atual",
+      payment: 0,
+      positive: 0,
+      negative: 0,
+      users: 0
+    }
+  })
 
   const [weeklyDate, setWeeklyDate] = useState<Date>(new Date());
+  const [weeklyCount, setWeeklyCount] = useState(0)
 
   const [positiveValues, setPositiveValues] = useState<any[]>([])
   const [positiveValuesSum, setPositiveValuesSum] = useState(0)
@@ -48,10 +63,6 @@ export default function WeeklyReport() {
     //Buscando dados do Firebase API
     getData()
 
-    //Setando as datas referentes a semana atual
-    const date = new Date()
-    const weeklyDate = new Date(date.setDate(date.getDate() - 7))
-    setWeeklyDate(weeklyDate)
   }, [user?.uid])
 
   //Função que busca os dados do firebase
@@ -61,21 +72,33 @@ export default function WeeklyReport() {
     const db = getDatabase()
     const dbRef = ref(db, "gym_users/" + user?.uid)
 
+    //Setando as datas referentes a semana atual
+    const date = new Date()
+    const weeklyDate = new Date(date.setDate(date.getDate() - 7))
+    setWeeklyDate(weeklyDate)
+
+    //Setando as datas referentes a semana passada
+    const lastWeek = new Date(date.setDate(date.getDate() - 14))
+
     //Arrays vazios dos vaores positivo, negativos e array de todos os dados semanais aguardando inserção de dados pelo firebase
     let positive: any = []
     let negative: any = []
-    let arrWeeklyValuesLabels: WeeklyValuesLabelsProps[] = weeklyValuesLabels
+    let weeklyValuesLabelsConst: any = weeklyValuesLabels
 
-    //Array e variável dos valores positivo limpos agurdando tratamento dos dados vindo do firebase
-    let arrPositive: any = []
+    //Vaiáveis dos valores positivo limpos agurdando tratamento dos dados vindo do firebase
+    let lastWeekPositiveSum = 0
     let positiveSum = 0
 
-    //Array e variável dos valores negativos limpos agurdando tratamento dos dados vindo do firebase
-    let arrNegative: any = []
+    //Vaiáveis dos valores negativos limpos agurdando tratamento dos dados vindo do firebase
+    let lastWeekNegativeSum = 0
     let negativeSum = 0
 
+    //Variável temporária que guarda os usuários cadastrados nas semanas
+    let usersCount: any = []
+    let lastWeekUsersCount: any = []
+
     //Buscando os dados
-    onValue(dbRef, (snapshot) => {
+    get(dbRef).then((snapshot) => {
       //Verificando se os dados existem
       if (snapshot.exists()) {
         //Setando os usuários
@@ -90,106 +113,144 @@ export default function WeeklyReport() {
         //Setando os valores negativos dentro da constante
         negative = (Object.entries(snapshot.val()['external-values'].negative))
 
-        //Definindo os valores como um array
-        Object.values(positive).forEach((value: any) => arrPositive.push(Number(value[1].newValue)))
-        //Calculando a soma dos valores positivos
-        arrPositive.forEach((e: number) => positiveSum += e)
+        //Calculando a soma dos valores positivos dessa semana
+        Object.values(positive).forEach((value: any) =>
+          value[0] > weeklyDate && value[0] < new Date() && (positiveSum += Number(value[1].newValue))
+        )
+        //Calculando a soma dos valores positivos da semana PASSADA
+        Object.values(positive).forEach((value: any) =>
+          value[0] > lastWeek && value[0] < weeklyDate && (lastWeekPositiveSum += Number(value[1].newValue))
+        )
         //Setando o valor da soma dos valores positivos
         setPositiveValuesSum(positiveSum)
-        //guardando o total positivo dentro de uma array
-        arrWeeklyValuesLabels.push({ positive: positiveSum })
+        //guardando o total positivo dessa semana dentro de uma array
+        weeklyValuesLabelsConst["Semana Atual"].positive = positiveSum
+        //guardando o total positivo da semana PASSADA dentro de uma array
+        weeklyValuesLabelsConst["Semana Passada"].positive = lastWeekPositiveSum
 
-        //Definindo os valores como um array
-        Object.values(negative).forEach((value: any) => arrNegative.push(Number(value[1].newValue)))
-        //Calculando a soma dos valores positivos
-        arrNegative.forEach((e: number) => negativeSum += e)
-        //Setando o valor da soma dos valores positivos
+        //Calculando a soma dos valores negativos dessa smena
+        Object.values(negative).forEach((value: any) =>
+          value[0] > weeklyDate && value[0] < new Date() && (negativeSum += Number(value[1].newValue))
+        )
+        //Calculando a soma dos valores negativos da semena PASSADA
+        Object.values(negative).forEach((value: any) =>
+          value[0] > lastWeek && value[0] < weeklyDate && (lastWeekNegativeSum += Number(value[1].newValue))
+        )
+        //Setando o valor da soma dos valores negativos
         setNegativeValuesSum(negativeSum)
-        //guardando o total negativo dentro de uma array
-        arrWeeklyValuesLabels.push({ negative: negativeSum })
+        //guardando o total negativo DESSA SEMANA dentro de uma array
+        weeklyValuesLabelsConst["Semana Atual"].negative = negativeSum
+        //guardando o total negativo DA SEMANA PASSADA dentro de uma array
+        weeklyValuesLabelsConst["Semana Passada"].negative = lastWeekNegativeSum
+
+        //Laço que filtra os usuários pela DESSA SEMANA
+        Object.values(snapshot.val().users).forEach((user: any, index) => user.registeredIn > weeklyDate && user.registeredIn < new Date() && usersCount.push(user))
+        //Setando o valor da quantidade de usuários DESSA SEMANA no objeto temporário
+        weeklyValuesLabelsConst["Semana Atual"].users = usersCount.length
+        //Laço que filtra os usuários pela DA SEMANA PASSADA
+        Object.values(snapshot.val().users).forEach((user: any, index) =>
+          user.registeredIn > lastWeek && user.registeredIn < weeklyDate && lastWeekUsersCount.push(user)
+        )
+        //Setando o valor da quantidade de usuários DESSA SEMANA no objeto temporário
+        weeklyValuesLabelsConst["Semana Passada"].users = lastWeekUsersCount.length
+
+        //Variáveis temporárias que guardam os valores positivos e negativos da semana passada
+        //O valor é o resulto da função chamada onde a função recebe os valores e possível data
+        let paymentSum = 0
+        let lastWeekPaymentSum = 0
+
+        //Laço que SOMA OS VALORES PAGOS EM MENSALIDADES DESSA SEMANA
+        Object.values(snapshot.val().users).forEach((user: any, index) => {
+          Object.entries(user.paymentShedules).forEach((value: any) => {
+            // console.log(value[0])
+            value[0] > weeklyDate && value[0] < new Date() &&
+              (paymentSum += Number(value[1]))
+          })
+        })
+
+        //Laço que SOMA OS VALORES PAGOS EM MENSALIDADES DA SEMANA QUE VEM
+        Object.values(snapshot.val().users).forEach((user: any, index) => {
+          Object.entries(user.paymentShedules).forEach((value: any) => {
+            // console.log(value[0])
+            value[0] > lastWeek && value[0] < weeklyDate &&
+              (lastWeekPaymentSum += Number(value[1]))
+          })
+        })
+        //Setando o valor da soma dos valores dessa semana
+        weeklyValuesLabelsConst["Semana Atual"].payment = paymentSum
+        setWeeklyCount(paymentSum)
+        //Setando o valor da soma dos valores da semana passada
+        weeklyValuesLabelsConst["Semana Passada"].payment = lastWeekPaymentSum
 
         //Setando os valores da array semanal dentro do estado
-        setWeeklyValuesLabels(arrWeeklyValuesLabels)
+        setWeeklyValuesLabels(weeklyValuesLabelsConst)
       }
     })
 
 
   }
 
-  //Função que retorna a quantide de usuários registrados na data
-  function getUsersCount() {
-    //Variável que guardará os usuários para serem contados
-    let usersCount: any = []
-    //Laço que filtra os usuários pela data
-    users.forEach((user, index) => user.registeredIn > weeklyDate && user.registeredIn < new Date() && usersCount.push(user))
-    //Retorno da quantidade de usuários em número
-
-    console.log(usersCount)
-
-    return usersCount.length
-  }
-
-  //Soma de todos os pagamentos de um usuários
-  // function getValuesOfPayments(payments: any) {
-  //   let sum = 0
-  //   console.log(Object.values(payments).forEach((e: any) => sum += Number(e)))
-  //   return sum
-  // }
-
   //Retorno dos valores e possível soma(se houver casos) de pagamentos de um usuário
   function getValuesOfPaymentsByDate(payments: any) {
     let userPayments = 0
-    const paymentsArr: any = Object.values(payments)
+    const paymentsArr: any = Object.entries(payments)
 
-    //Laço que faz a soma dos valores da lista de pagamento
-    paymentsArr.forEach((item: any) => userPayments += Number(item))
+    //Laço que faz a soma dos valores da lista de pagamento,
+    //Ele filtra os pagamentos pela data recebida pelo Estado
+    //E retorna a soma dos valores
+    paymentsArr.forEach((item: any) => {
+      item[0] > weeklyDate && item[0] < new Date() && (userPayments += Number(item[1]))
+    })
+
+    //retorna o valor a soma dos pagamentos
     return userPayments
   }
 
-  //Função que retorna a quantide de usuários registrados na data
-  function getPaymentsCount() {
-    //Variável que guardará os usuários para serem contados
-    let arrCount: any = []
-    let arrPayments: number = 0
-    //Laço que filtra os usuários pela data
-    users.forEach((user, index) => user.payment > weeklyDate && user.payment < new Date() && arrCount.push(user.paymentShedules))
-
-    for (let i = 0; i < arrCount.length; i++) {
-      arrPayments += getValuesOfPaymentsByDate(arrCount[i])
-    }
-
-    //Retorno da quantidade de usuários em número
-    return arrPayments
-  }
-
+  //Inicializando a função que possibilita a criação do Chart
   ChartJS.register(
     CategoryScale,
     LinearScale,
     BarElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
   )
 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    locale: 'pt-br',
     plugins: {
       legend: {
         position: 'bottom' as const,
       },
-      ResizeObserverSize
+      ResizeObserverSize,
+      tooltip: {
+        callbacks: {
+          label: function (context: any) {
+            let label = context.dataset.label || '';
+
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += PriceMask(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      }
     },
     scales: {
       y: {
         ticks: {
           // Formatação para Real brasileior com o a Máscara
-          callback: function (value: any) {
+          callback: (value: any) => {
             return PriceMask(value);
           }
         }
       },
-    }
+    },
   }
 
   const userOptions = {
@@ -213,53 +274,35 @@ export default function WeeklyReport() {
     }
   }
 
-  const labels = [{
-    name: 'data 1',
-    usersPayment: 55474,
-    positive: 49548,
-    negative: 55012,
-    users: 8,
-  },
-  {
-    name: 'data 1',
-    usersPayment: 55748,
-    positive: 49525,
-    negative: 50121,
-    users: 12,
-  }]
-
   const dataChart = {
-    labels: ["Semana passada", "Semana Atual"],
-    TData: labels[0],
+    labels: Object.keys(weeklyValuesLabels),
+    TData: Object.values(weeklyValuesLabels),
     datasets: [
       {
-        label: 'Entrada externa',
-        data: Object.values(labels).map((label) => label.usersPayment),
+        label: 'Pagamentos',
+        data: Object.values(weeklyValuesLabels).map((label: any) => label.payment),
         backgroundColor: '#319797',
-        borderWidth: 2,
       },
       {
-        label: 'Saída externa',
-        data: labels.map((label) => label.positive),
-        backgroundColor: '#b64d60',
-        borderWidth: 2,
-      },
-      {
-        label: 'Matrículas',
-        data: labels.map((label) => label.negative),
+        label: 'Entrada externa',
+        data: Object.values(weeklyValuesLabels).map((label: any) => label.positive),
         backgroundColor: 'rgba(120, 255, 104, 0.7)',
-        borderWidth: 2,
+      },
+      {
+        label: 'Saída Externa',
+        data: Object.values(weeklyValuesLabels).map((label: any) => label.negative),
+        backgroundColor: '#b64d60',
       }
     ],
   };
 
   const userChart = {
-    labels: ["Semana passada", "Semana Atual"],
-    TData: labels[0],
+    labels: Object.keys(weeklyValuesLabels),
+    TData: Object.values(weeklyValuesLabels),
     datasets: [
       {
         label: 'Usuários cadastrados na semana',
-        data: Object.values(labels).map((label) => label.users),
+        data: Object.values(weeklyValuesLabels).map((label: any) => label.users),
         backgroundColor: '#ffd438',
         borderWidth: 2,
       }
@@ -283,7 +326,7 @@ export default function WeeklyReport() {
           <h2>Entrada de valores</h2>
           <div className="box-values">
             {positiveValues.map((value, index) => (
-              <ValueItems key={index} name={value[1].name} date={value[1].date} value={value[1].newValue} class={(index & 1 ? "impar" : "par")} />
+              value[0] > weeklyDate && value[0] < new Date() && <ValueItems key={index} name={value[1].name} date={value[1].date} value={value[1].newValue} class={(index & 1 ? "impar" : "par")} />
             ))}
           </div>
           <div className="footer">{PriceMask(positiveValuesSum)}</div>
@@ -308,7 +351,7 @@ export default function WeeklyReport() {
             ))}
           </div>
           <div className="box-footer">
-            {getUsersCount()} usuário(s) cadastrado(s)
+            {weeklyValuesLabels["Semana Atual"].users} usuário(s) cadastrado(s)
           </div>
         </div>
 
@@ -329,7 +372,7 @@ export default function WeeklyReport() {
                 />
               ))}
             </div>
-            <div className="footer">{PriceMask(getPaymentsCount())}</div>
+            <div className="footer">{PriceMask(weeklyCount)}</div>
           </div>
 
           <div className="box-item">
