@@ -11,6 +11,8 @@ import Modal from "../components/modal";
 import InsertNewModalitie from "../components/insert-new-modalities";
 import InsertNewEmployee from "../components/insert-new-Employee";
 import { useModal } from "../hooks/use-modal";
+import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function Gym() {
   const { user } = useAuth();
@@ -40,13 +42,22 @@ export default function Gym() {
   }, []);
 
   function modalToggle(id: string) {
-    
-    if(id === "modalities") {     
+
+    if (id === "modalities") {
       modalChange("", <InsertNewModalitie />)
     }
 
-    if( id === "insert-staff") {
+    if (id === "insert-staff") {
       modalChange("", <InsertNewEmployee />)
+    }
+  }
+
+  //Condicional que verifica se o usuário está autenticado
+  if (typeof window !== 'undefined') {
+    const token = Cookies.get('token')
+
+    if (!token) {
+      return <Navigate to="/login" replace />
     }
   }
 
@@ -55,7 +66,7 @@ export default function Gym() {
       {loading ? <Loading /> : ""}
       <Navigation />
       <Header />
-      
+
       <main className="row">
         <h1 className="sub-heading">Dados da academia</h1>
 
@@ -76,7 +87,7 @@ export default function Gym() {
 
         <div className="box userDetails">
           <h3>Staff</h3>
-          
+
           {Object.values(staff).map((staff) => (
             <span key={staff.name}>
               {staff.name} / {staff.function} <FcFullTrash className="icon pointer" size={25} />{" "}

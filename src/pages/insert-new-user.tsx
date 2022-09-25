@@ -15,8 +15,9 @@ import { useAuth } from "../hooks/use-auth";
 import { CPFMask, PhoneMask } from "../services/masks";
 import Navigation from "../components/navigation";
 import Header from "../components/header";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { GrDocumentPdf } from "react-icons/gr";
+import Cookies from "js-cookie";
 
 export default function InsertNewUser() {
   const { user } = useAuth();
@@ -123,6 +124,15 @@ export default function InsertNewUser() {
     const label = document.querySelector("#labelDoc");
     label!.innerHTML = e.target.files[0].name;
     setFile(e.target.files[0]);
+  }
+
+  //Condicional que verifica se o usuário está autenticado
+  if (typeof window !== 'undefined') {
+    const token = Cookies.get('token')
+
+    if (!token) {
+      return <Navigate to="/login" replace />
+    }
   }
 
   return (

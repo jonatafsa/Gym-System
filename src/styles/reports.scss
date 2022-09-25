@@ -13,6 +13,25 @@
   flex-direction: row;
   flex-wrap: wrap;
 
+  .reports-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+
+    .header-item {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+
+      select {
+        border-radius: 12px;
+        border: 0;
+        width: 150px;
+      }
+    }
+  }
+
   .box-item {
     width: 300px;
     height: 370px;
@@ -236,5 +255,22 @@
       padding: 1rem;
       // background-color: rgb(112, 112, 112);
     }
+  }
+
+  .empty-values {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    width: 150px;
+    height: 150px;
+    background-color: #fff;
+    border-radius: 50%;
+    margin: auto;
+    color: var(--text-color);
+    text-align: center;
+    font-size: .8rem;
+    opacity: .5;
+    pointer-events: none;
   }
 }

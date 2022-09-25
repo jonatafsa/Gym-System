@@ -323,6 +323,15 @@ export default function Home() {
     ],
   };
 
+  //Condicional que verifica se o usuário está autenticado
+  if (typeof window !== 'undefined') {
+    const token = Cookies.get('token')
+
+    if (!token) {
+      return <Navigate to="/login" replace />
+    }
+  }
+
   return (
     <div className="container" >
       <Navigation />
@@ -371,7 +380,7 @@ export default function Home() {
                 title="*"
                 value="Relatório Semanal"
                 status="hide"
-                footer={<Link to="./weekly-report">Consultar</Link>}
+                footer={<Link to="./reports?weekly">Consultar</Link>}
               />
 
               <CardItem

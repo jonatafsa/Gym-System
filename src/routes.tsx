@@ -13,7 +13,7 @@ import User from './pages/user';
 import UserManager from './pages/user-manager';
 
 import ExternalValues from './pages/values-external';
-import WeeklyReport from './pages/weekly-report';
+import WeeklyReport from './pages/reports';
 
 export default function MyRoutes() {
   const { user } = useAuth()
@@ -23,68 +23,36 @@ export default function MyRoutes() {
       <Routes>
         <Route
           path="/"
-          element={
-            <ProtectedRoute user={user?.refreshToken}>
-              <Home />
-            </ProtectedRoute>
-          } />
+          element={<Home />} />
 
         <Route
           path="insert-new-user"
-          element={
-            <ProtectedRoute user={user?.refreshToken}>
-              <InsertNewUser />
-            </ProtectedRoute>
-          } />
+          element={<InsertNewUser />} />
 
         <Route
           path="edit-modalities"
-          element={
-            <ProtectedRoute user={user?.refreshToken}>
-              <EditModalities />
-            </ProtectedRoute>
-          } />
+          element={<EditModalities />} />
 
         <Route
           path="user-manager"
-          element={
-            <ProtectedRoute user={user?.refreshToken}>
-              <UserManager />
-            </ProtectedRoute>
-          } />
+          element={<UserManager />} />
 
 
         <Route
           path="external-values"
-          element={
-            <ProtectedRoute user={user?.refreshToken}>
-              <ExternalValues />
-            </ProtectedRoute>
-          } />
+          element={<ExternalValues />} />
 
         <Route
           path="user"
-          element={
-            <ProtectedRoute user={user?.refreshToken}>
-              <User />
-            </ProtectedRoute>
-          } />
+          element={<User />} />
 
         <Route
           path="gym"
-          element={
-            <ProtectedRoute user={user?.refreshToken}>
-              <Gym />
-            </ProtectedRoute>
-          } />
+          element={<Gym />} />
 
         <Route
-          path="weekly-report"
-          element={
-            <ProtectedRoute user={user?.refreshToken}>
-              <WeeklyReport />
-            </ProtectedRoute>
-          } />
+          path="reports"
+          element={<WeeklyReport />} />
 
         <Route path="/login" element={<Login />} />
       </Routes>

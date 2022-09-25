@@ -1,5 +1,7 @@
 import { get, getDatabase, ref, set } from "firebase/database"
+import Cookies from "js-cookie"
 import { FormEvent, useEffect, useState } from "react"
+import { Navigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import Header from "../components/header"
 import Navigation from "../components/navigation"
@@ -68,6 +70,15 @@ export default function ExternalValues() {
       setCategory("")
     })
 
+  }
+
+  //Condicional que verifica se o usuário está autenticado
+  if (typeof window !== 'undefined') {
+    const token = Cookies.get('token')
+
+    if (!token) {
+      return <Navigate to="/login" replace />
+    }
   }
 
   return (

@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 import { getDownloadURL, getStorage, ref as StorageRef, uploadBytes } from "firebase/storage";
 import Loading from "../components/loading";
 import { useModal } from "../hooks/use-modal";
+import Cookies from "js-cookie";
+import { Navigate } from "react-router-dom";
 
 export default function User() {
   const { user } = useAuth();
@@ -104,6 +106,15 @@ export default function User() {
         })
       })
     })
+  }
+
+  //Condicional que verifica se o usuário está autenticado
+  if (typeof window !== 'undefined') {
+    const token = Cookies.get('token')
+
+    if (!token) {
+      return <Navigate to="/login" replace />
+    }
   }
 
   return (

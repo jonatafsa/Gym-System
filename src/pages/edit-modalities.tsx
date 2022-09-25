@@ -1,5 +1,7 @@
 import { get, getDatabase, onValue, ref, set, update } from "firebase/database"
+import Cookies from "js-cookie"
 import { FormEvent, useEffect, useState } from "react"
+import { Navigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import Header from "../components/header"
 import Navigation from "../components/navigation"
@@ -196,6 +198,15 @@ export default function EditModalities() {
         setDom(x)
         setForceDom(forceDom + 1)
         break
+    }
+  }
+
+  //Condicional que verifica se o usuário está autenticado
+  if (typeof window !== 'undefined') {
+    const token = Cookies.get('token')
+
+    if (!token) {
+      return <Navigate to="/login" replace />
     }
   }
 

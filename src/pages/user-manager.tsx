@@ -20,6 +20,8 @@ import Navigation from "../components/navigation";
 import Header from "../components/header";
 import EditUserModal from "../components/edit-user-modal";
 import { useModal } from "../hooks/use-modal";
+import Cookies from "js-cookie";
+import { Navigate } from "react-router-dom";
 
 type Users = [
   {
@@ -287,6 +289,15 @@ export default function UserManager() {
       toast.success("Usuário atualizado!!");
       closeModal();
     });
+  }
+
+  //Condicional que verifica se o usuário está autenticado
+  if (typeof window !== 'undefined') {
+    const token = Cookies.get('token')
+
+    if (!token) {
+      return <Navigate to="/login" replace />
+    }
   }
 
   function check(e: any) {
