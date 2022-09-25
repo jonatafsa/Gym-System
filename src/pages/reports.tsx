@@ -150,9 +150,6 @@ export default function WeeklyReport() {
     get(dbRef).then((snapshot) => {
       //Verificando se os dados existem
       if (snapshot.exists()) {
-        //Setando os usuários
-        setUsers(Object.values(snapshot.val().users))
-
         //Definindo os arrays com os dados dos valores positos e negativos dentro de um estado
         setPositiveValues(Object.entries(snapshot.val()['external-values'].positive))
         setNegativeValues(Object.entries(snapshot.val()['external-values'].negative))
@@ -202,11 +199,12 @@ export default function WeeklyReport() {
         //guardando o total negativo DA SEMANA PASSADA dentro de uma array
         valuesLabelsArr.previousReport.negative = lastWeekNegativeSum
 
-        //Laço que filtra os usuários pela DESSA SEMANA
+        //Laço que filtra os usuários pela DATA
         Object.values(snapshot.val().users).forEach((user: any, index) => user.registeredIn > reportDate && user.registeredIn < endReportDate && usersCount.push(user))
-        //Setando o valor da quantidade de usuários DESSA SEMANA no objeto temporário
+        //Setando o valor da quantidade de usuários DA DATA no objeto temporário
         valuesLabelsArr.actualReport.users = usersCount.length
-
+        //Setando os usuários
+        setUsers(usersCount)
 
         //Laço que filtra os usuários pela DA SEMANA PASSADA
         //ESSE EU TENHO QUE REVISAR POIS PEGA DUAS DUAS DATAS DISTINTAS
@@ -280,7 +278,7 @@ export default function WeeklyReport() {
     if (valuesArr.length === 0) {
       return (
         <div className="empty-values">
-          Não há dados para os últimos 7 dias
+          Não há dados para exibir
         </div>
       )
     }
@@ -438,64 +436,71 @@ export default function WeeklyReport() {
       <Header />
       <Navigation />
 
+      <div className="reports-header">
+        <h1 className="sub-heading">
+          Relatório de
+          ({reportDate.toLocaleDateString()})
+          a ({endReportDate.toLocaleDateString()})
+        </h1>
+
+        <div className="header-item">
+          <label htmlFor="selectTime">Relatório</label>
+          <select id="timeList" onChange={editTimeforReports}>
+            <option value="weekly">Semanal</option>
+            <option value="montly">Mensal</option>
+            <option value="yearly">Anual</option>
+          </select>
+        </div>
+      </div>
+
       <main className="reports">
-        <div className="reports-header">
-          <h1 className="sub-heading">
-            Relatório de
-            ({reportDate.toLocaleDateString()})
-            a ({endReportDate.toLocaleDateString()})
-          </h1>
 
-          <div className="header-item">
-            <label htmlFor="selectTime">Relatório</label>
-            <select id="timeList" onChange={editTimeforReports}>
-              <option value="weekly">Semanal</option>
-              <option value="montly">Mensal</option>
-              <option value="yearly">Anual</option>
-            </select>
+        <div className="top-content">
+          <div className="box-item positive">
+            <h2>Entrada de valores</h2>
+            <div className="box-values">
+              {positiveValues.map((value, index) => (
+                value[0] > reportDate && value[0] < endReportDate && <ValueItems key={index} name={value[1].name} date={value[1].date} value={value[1].newValue} class={(index & 1 ? "impar" : "par")} />
+              ))}
+              {thisValuesExists(positiveValues)}
+            </div>
+            <div className="footer">{PriceMask(positiveValuesSum)}</div>
           </div>
-        </div>
 
-        <div className="box-item positive">
-          <h2>Entrada de valores</h2>
-          <div className="box-values">
-            {positiveValues.map((value, index) => (
-              value[0] > reportDate && value[0] < endReportDate && <ValueItems key={index} name={value[1].name} date={value[1].date} value={value[1].newValue} class={(index & 1 ? "impar" : "par")} />
-            ))}
-            {thisValuesExists(positiveValues)}
+          <div className="box-item negative">
+            <h2>Saída de valores</h2>
+            <div className="box-values">
+              {negativeValues.map((value, index) => (
+                value[0] > reportDate && value[0] < endReportDate ? <ValueItems key={index} name={value[1].name} date={value[1].date} value={value[1].newValue} class={(index & 1 ? "impar" : "par")} /> : ""
+              ))}
+              {thisValuesExists(negativeValues)}
+            </div>
+            <div className="footer">{PriceMask(negativeValuesSum)} </div>
           </div>
-          <div className="footer">{PriceMask(positiveValuesSum)}</div>
-        </div>
 
-        <div className="box-item negative">
-          <h2>Saída de valores</h2>
-          <div className="box-values">
-            {negativeValues.map((value, index) => (
-              value[0] > reportDate && value[0] < endReportDate ? <ValueItems key={index} name={value[1].name} date={value[1].date} value={value[1].newValue} class={(index & 1 ? "impar" : "par")} /> : ""
-            ))}
-            {thisValuesExists(negativeValues)}
-          </div>
-          <div className="footer">{PriceMask(negativeValuesSum)} </div>
-        </div>
+          <div className="users-registered">
+            <h2>
+              Usuários cadastrados
+              {params === 'weekly' && 'nos últimos 7 dias'}
+              {params === 'montly' && 'nos últimos 30 dias'}
+              {params === '' && 'nos últimos 30 dias'}
+              {params === 'yearly' && 'Nos período de 1 ano'}
 
-        <div className="users-registered">
-          <h2>
-            Usuários cadastrados
-            {params === 'weekly' && 'nos últimos 7 dias'}
-            {params === 'montly' && 'nos últimos 30 dias'}
-            {params === '' && 'nos últimos 30 dias'}
-            {params === 'yearly' && 'Nos período de 1 ano'}
+            </h2>
 
-          </h2>
-
-          <div className="users-items">
-            {users.map((user, index) => (
-              user.registeredIn > reportDate && user.registeredIn < endReportDate && <UsersItem key={index} name={user.name} modalities={Object.keys(user.userModalities || [])} registeredIn={user.registeredIn} class={(index & 1 ? "impar" : "par")} />
-            ))}
-            {/* {thisValuesExists(users)} */}
-          </div>
-          <div className="box-footer">
-            {valuesLabels.actualReport.users} usuário(s) cadastrado(s)
+            <div className="users-items">
+              {users.map((user, index) => (
+                <UsersItem key={index} name={user.name} modalities={Object.keys(user.userModalities || [])} registeredIn={user.registeredIn} class={(index & 1 ? "impar" : "par")} />
+              ))}
+              {users.length === 0 &&
+                <div className="empty-values">
+                  Não há dados para exibir
+                </div>
+              }
+            </div>
+            <div className="box-footer">
+              {valuesLabels.actualReport.users} usuário(s) cadastrado(s)
+            </div>
           </div>
         </div>
 
@@ -515,17 +520,22 @@ export default function WeeklyReport() {
                   value={getValuesOfPaymentsByDate(user.paymentShedules)}
                 />
               ))}
+
+              {users.length === 0 &&
+                <div className="empty-values">
+                  Não há dados para exibir
+                </div>
+              }
             </div>
             <div className="footer">{PriceMask(paymentsCount)}</div>
           </div>
 
           <div className="box-item">
-            <h2>Gráfico de valores</h2>
+            {/* <h2>Gráfico de valores</h2> */}
             <Bar options={options} data={dataChart} className="chart" />
           </div>
 
           <div className="box-item">
-            <h2>Gráfico de usuários</h2>
             <Bar options={userOptions} data={userChart} className="chart" />
           </div>
         </div>
