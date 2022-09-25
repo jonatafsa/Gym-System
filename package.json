@@ -7,6 +7,12 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "routes": [
+    {
+      "src": "/[^.]+",
+      "dest": "/"
+    }
+  ],
   "dependencies": {
     "chart.js": "^3.9.1",
     "faker": "^6.6.6",
