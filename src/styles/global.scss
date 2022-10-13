@@ -298,15 +298,16 @@ nav {
     li {
       position: relative;
       display: flex;
-      align-items: center;
+      // align-items: center;
       justify-content: flex-start;
       gap: 1.20rem;
       cursor: pointer;
+      position: relative;
 
       margin: 0 1rem;
       letter-spacing: 0.5px;
       font-weight: 500;
-      opacity: .9;
+      opacity: .95;
       transition: .3s;
 
       &::after {
@@ -364,10 +365,48 @@ nav {
       }
 
       .text {
+        display: flex;
+        align-items: center;
         width: 70%;
         font-size: .85rem;
         opacity: 1;
         transition: .6s;
+      }
+
+      .reports {
+        position: absolute;
+        top: 3.3rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .5rem;
+        padding: 0;
+        width: 0;
+        height: 0;
+        opacity: 0;
+        background-color: var(--main-color-2);
+        border-radius: 0 0 5px 5px;
+        transform: translateX(-5px);
+        // pointer-events: none;
+        overflow: hidden;
+        transition: .5s ease;
+
+        a {
+          display: block;
+          color: var(--heading-color);
+          font-size: .9rem;
+        }
+      }
+    }
+
+    .report-style:hover {
+      margin-bottom: 120px;
+
+      .reports {
+        padding: 1rem;
+        width: 100%;
+        height: 120px;
+        opacity: 1;
       }
     }
   }

@@ -68,6 +68,7 @@ export default function WeeklyReport() {
   const [negativeValuesSum, setNegativeValuesSum] = useState(0)
 
   const [users, setUsers] = useState<any[]>([])
+  const [usersCountbyDate, setUsersCountbyDate] = useState(0)
 
   useEffect(() => {
     //Buscando dados do Firebase API
@@ -150,6 +151,9 @@ export default function WeeklyReport() {
     get(dbRef).then((snapshot) => {
       //Verificando se os dados existem
       if (snapshot.exists()) {
+        //Setando os usuários
+        setUsers(Object.values(snapshot.val().users))
+
         //Definindo os arrays com os dados dos valores positos e negativos dentro de um estado
         setPositiveValues(Object.entries(snapshot.val()['external-values'].positive))
         setNegativeValues(Object.entries(snapshot.val()['external-values'].negative))
@@ -170,8 +174,6 @@ export default function WeeklyReport() {
           value[0] > compairTimesDate && value[0] < reportDate && (PositiveSumPreviousDate += Number(value[1].newValue))
         )
 
-
-
         //Setando o valor da soma dos valores positivos
         setPositiveValuesSum(positiveSum)
         //guardando o total positivo dessa semana dentro de uma array
@@ -184,13 +186,11 @@ export default function WeeklyReport() {
           value[0] > reportDate && value[0] < endReportDate && (negativeSum += Number(value[1].newValue))
         )
 
-
         //Calculando a soma dos valores negativos da semena PASSADA
         //ESSE EU TENHO QUE REVISAR POIS PEGA DUAS DUAS DATAS DISTINTAS
         Object.values(negative).forEach((value: any) =>
           value[0] > compairTimesDate && value[0] < reportDate && (lastWeekNegativeSum += Number(value[1].newValue))
         )
-
 
         //Setando o valor da soma dos valores negativos
         setNegativeValuesSum(negativeSum)
@@ -203,8 +203,9 @@ export default function WeeklyReport() {
         Object.values(snapshot.val().users).forEach((user: any, index) => user.registeredIn > reportDate && user.registeredIn < endReportDate && usersCount.push(user))
         //Setando o valor da quantidade de usuários DA DATA no objeto temporário
         valuesLabelsArr.actualReport.users = usersCount.length
-        //Setando os usuários
-        setUsers(usersCount)
+
+        //setando no contento a quantidade de usários pela data
+        setUsersCountbyDate(usersCount.length)
 
         //Laço que filtra os usuários pela DA SEMANA PASSADA
         //ESSE EU TENHO QUE REVISAR POIS PEGA DUAS DUAS DATAS DISTINTAS
@@ -481,18 +482,18 @@ export default function WeeklyReport() {
           <div className="users-registered">
             <h2>
               Usuários cadastrados
-              {params === 'weekly' && 'nos últimos 7 dias'}
-              {params === 'montly' && 'nos últimos 30 dias'}
-              {params === '' && 'nos últimos 30 dias'}
+              {params === 'weekly' && ' nos últimos 7 dias'}
+              {params === 'montly' && ' nos últimos 30 dias'}
+              {params === '' && ' nos últimos 30 dias'}
               {params === 'yearly' && 'Nos período de 1 ano'}
 
             </h2>
 
             <div className="users-items">
               {users.map((user, index) => (
-                <UsersItem key={index} name={user.name} modalities={Object.keys(user.userModalities || [])} registeredIn={user.registeredIn} class={(index & 1 ? "impar" : "par")} />
+                user.registeredIn > reportDate && user.registeredIn < endReportDate && <UsersItem key={index} name={user.name} modalities={Object.keys(user.userModalities || [])} registeredIn={user.registeredIn} class={(index & 1 ? "impar" : "par")} />
               ))}
-              {users.length === 0 &&
+              {usersCountbyDate === 0 &&
                 <div className="empty-values">
                   Não há dados para exibir
                 </div>
@@ -521,7 +522,7 @@ export default function WeeklyReport() {
                 />
               ))}
 
-              {users.length === 0 &&
+              {usersCountbyDate === 0 &&
                 <div className="empty-values">
                   Não há dados para exibir
                 </div>
