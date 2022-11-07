@@ -1,10 +1,10 @@
 # Sistema de gerenciamento de academias
 
-![GitHub repo size](https://img.shields.io/github/repo-size/iuricode/README-template?style=for-the-badge)
-![GitHub language count](https://img.shields.io/github/languages/count/iuricode/README-template?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/iuricode/README-template?style=for-the-badge)
-![Bitbucket open issues](https://img.shields.io/bitbucket/issues/iuricode/README-template?style=for-the-badge)
-![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/iuricode/README-template?style=for-the-badge)
+![GitHub repo size](https://img.shields.io/github/repo-size/jonatafsa/Gym-System?style=for-the-badge)
+![GitHub language count](https://img.shields.io/github/languages/count/jonatafsa/Gym-System?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/jonatafsa/Gym-System?style=for-the-badge)
+![Bitbucket open issues](https://img.shields.io/bitbucket/issues/jonatafsa/Gym-System?style=for-the-badge)
+![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/jonatafsa/Gym-System?style=for-the-badge)
 
 <img src="https://lh3.googleusercontent.com/pw/AL9nZEXRwENDw5_upP2xGHKmpzLb5hZwlJgTh0IJt_lVv3pU4GDEMDmbhaZSv2n7G-PPF2Ofv7XkDmVjWRWStcS3vBEhMSO_uUTkVRT71G7XCmxsMwIN1iUTpvQ1mU9A0XbCewtypeJ__eiOZttvWL0cD4-QJg=w1865-h917-no?authuser=0" alt="exemplo imagem">
 
